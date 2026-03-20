@@ -1,95 +1,136 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  signOut, 
+  onAuthStateChanged,
+  type User as FirebaseUser
+} from 'firebase/auth';
+import { 
+  collection, 
+  doc, 
+  setDoc, 
+  updateDoc, 
+  onSnapshot,
+  query
+} from 'firebase/firestore';
+import { auth, db } from '../config/firebase';
 import type { User, Role, UserStatus } from '../types/auth';
 
 interface AuthContextType {
   currentUser: User | null;
   users: User[];
-  login: (email: string, pass: string) => { success: boolean; message?: string };
-  register: (name: string, email: string, pass: string) => { success: boolean; message?: string };
-  logout: () => void;
-  updateUserRole: (userId: string, newRole: Role, newStatus: UserStatus) => void;
+  loading: boolean;
+  login: (email: string, pass: string) => Promise<{ success: boolean; message?: string }>;
+  register: (name: string, email: string, pass: string) => Promise<{ success: boolean; message?: string }>;
+  logout: () => Promise<void>;
+  updateUserRole: (userId: string, newRole: Role, newStatus: UserStatus) => Promise<void>;
 }
-
-const defaultAdmin: User = {
-  id: 'usr-admin-1',
-  name: 'Super Admin',
-  email: 'admin@datacenter.com',
-  password: 'admin',
-  role: 'Admin',
-  status: 'active'
-};
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // Use localStorage or persist mock memory
-  const [users, setUsers] = useState<User[]>(() => {
-    const saved = localStorage.getItem('dc_users');
-    return saved ? JSON.parse(saved) : [defaultAdmin];
-  });
+  const [users, setUsers] = useState<User[]>([]);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const [currentUser, setCurrentUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem('dc_current_user');
-    return saved ? JSON.parse(saved) : null; // Start logged out
-  });
-
-  // Sync basic states to local storage
+  // 1. Sync the Users collection from Firestore real-time
   useEffect(() => {
-    localStorage.setItem('dc_users', JSON.stringify(users));
-  }, [users]);
+    const q = query(collection(db, 'users'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const usersData: User[] = [];
+      snapshot.forEach((docSnap) => {
+        usersData.push({ id: docSnap.id, ...docSnap.data() } as User);
+      });
+      setUsers(usersData);
+    });
+    return () => unsubscribe();
+  }, []);
 
+  // 2. Sync Current User from Firebase Auth & cross-reference with 'users' state
   useEffect(() => {
-    if (currentUser) {
-      localStorage.setItem('dc_current_user', JSON.stringify(currentUser));
-    } else {
-      localStorage.removeItem('dc_current_user');
-    }
-  }, [currentUser]);
-
-  const login = (email: string, pass: string) => {
-    const foundUser = users.find(u => u.email === email && u.password === pass);
-    if (!foundUser) {
-      return { success: false, message: 'Email atau password salah' };
-    }
-    if (foundUser.status === 'pending') {
-      return { success: false, message: 'Akun Anda sedang menunggu persetujuan Admin.' };
-    }
-    
-    setCurrentUser(foundUser);
-    return { success: true };
-  };
-
-  const register = (name: string, email: string, pass: string) => {
-    if (users.some(u => u.email === email)) {
-      return { success: false, message: 'Email sudah terdaftar' };
-    }
-    const newUser: User = {
-      id: `usr-${Date.now()}`,
-      name,
-      email,
-      password: pass,
-      role: 'Guest',
-      status: 'pending'
-    };
-    setUsers(prev => [...prev, newUser]);
-    return { success: true, message: 'Pendaftaran berhasil. Silakan tunggu persetujuan Admin.' };
-  };
-
-  const logout = () => {
-    setCurrentUser(null);
-  };
-
-  const updateUserRole = (userId: string, newRole: Role, newStatus: UserStatus) => {
-    setUsers(prev => prev.map(u => {
-      if (u.id === userId) {
-        return { ...u, role: newRole, status: newStatus };
+    const unsubscribeAuth = onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
+      if (firebaseUser) {
+        // We need to wait for `users` to populate or fetch the doc directly.
+        // For robustness, let's just find them in the `users` array if it exists.
+        // Note: There's a slight race condition here if users array isn't loaded yet.
+        const foundUser = users.find(u => u.id === firebaseUser.uid);
+        if (foundUser) {
+          setCurrentUser(foundUser);
+        } else {
+          // If not in array yet, wait for the next render when `users` updates
+          // or we could fetch the specific doc securely.
+          setCurrentUser({
+            id: firebaseUser.uid,
+            email: firebaseUser.email || '',
+            name: 'Loading...',
+            role: 'Guest',
+            status: 'pending'
+          });
+        }
+      } else {
+        setCurrentUser(null);
       }
-      return u;
-    }));
+      setLoading(false);
+    });
+
+    return () => unsubscribeAuth();
+  }, [users]); // Re-run when users array changes so currentUser grabs its real profile data
+
+  const login = async (email: string, pass: string) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+      return { success: true };
+    } catch (err: any) {
+      console.error(err);
+      return { success: false, message: 'Email atau password salah.' };
+    }
+  };
+
+  const register = async (name: string, email: string, pass: string) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+      const userUid = userCredential.user.uid;
+
+      const newUser: Omit<User, 'id'> = {
+        name,
+        email,
+        role: 'Guest',
+        status: 'pending'
+      };
+
+      // Create their profile in the Firestore database
+      await setDoc(doc(db, 'users', userUid), newUser);
+
+      // Sign them out immediately? Or leave them signed in but status='pending'
+      // If they are signed in but pending, the ProtectedRoute will handle it.
+      await signOut(auth);
+
+      return { success: true, message: 'Pendaftaran berhasil. Silakan tunggu persetujuan Admin.' };
+    } catch (err: any) {
+      console.error(err);
+      return { success: false, message: 'Pendaftaran gagal atau email sudah digunakan.' };
+    }
+  };
+
+  const logout = async () => {
+    await signOut(auth);
+  };
+
+  const updateUserRole = async (userId: string, newRole: Role, newStatus: UserStatus) => {
+    try {
+      const userRef = doc(db, 'users', userId);
+      await updateDoc(userRef, {
+        role: newRole,
+        status: newStatus
+      });
+    } catch (err) {
+      console.error("Error updating user role: ", err);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ currentUser, users, login, register, logout, updateUserRole }}>
+    <AuthContext.Provider value={{ currentUser, users, loading, login, register, logout, updateUserRole }}>
       {children}
     </AuthContext.Provider>
   );

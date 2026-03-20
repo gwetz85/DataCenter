@@ -10,7 +10,7 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     
@@ -19,7 +19,7 @@ export default function Login() {
       return;
     }
 
-    const { success, message } = login(email, password);
+    const { success, message } = await login(email, password);
     if (success) {
       navigate('/dashboard');
     } else {

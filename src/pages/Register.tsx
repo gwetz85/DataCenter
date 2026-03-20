@@ -12,7 +12,7 @@ export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccessMsg('');
@@ -22,7 +22,7 @@ export default function Register() {
       return;
     }
 
-    const { success, message } = register(name, email, password);
+    const { success, message } = await register(name, email, password);
     if (success) {
       setSuccessMsg(message || 'Pendaftaran berhasil!');
       setTimeout(() => {
