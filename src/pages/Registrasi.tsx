@@ -64,6 +64,10 @@ export default function Registrasi() {
     }
 
     if (jenisLayanan === 'Pembuatan Sertifikat Halal ( Selfdeclare )') {
+      if (!namaUsaha || !lokasiUsaha || !jenisUsaha || !modalUsaha || !lamaUsaha) {
+        setStatus({ type: 'error', msg: 'Mohon isi semua detail usaha (Data NIB) untuk Sertifikat Halal.' });
+        return;
+      }
       if (!namaProduk || !lokasiPabrik || !bahanDigunakan || !bahanPembersih || !bahanKemasan || !tataCaraPembuatan) {
         setStatus({ type: 'error', msg: 'Mohon isi semua detail produk & bahan untuk Sertifikat Halal.' });
         return;
@@ -100,7 +104,10 @@ export default function Registrasi() {
       if (jenisLayanan === 'Pembuatan NIB') {
         extendedData = { namaUsaha, lokasiUsaha, jenisUsaha, modalUsaha, lamaUsaha };
       } else if (jenisLayanan === 'Pembuatan Sertifikat Halal ( Selfdeclare )') {
-        extendedData = { namaProduk, lokasiPabrik, bahanDigunakan, bahanPembersih, bahanKemasan, tataCaraPembuatan };
+        extendedData = { 
+          namaUsaha, lokasiUsaha, jenisUsaha, modalUsaha, lamaUsaha,
+          namaProduk, lokasiPabrik, bahanDigunakan, bahanPembersih, bahanKemasan, tataCaraPembuatan 
+        };
       }
 
       await set(newPengajuanRef, { ...baseData, ...extendedData });
@@ -204,9 +211,9 @@ export default function Registrasi() {
           </div>
 
           {/* Dinamis: Formulir NIB */}
-          {jenisLayanan === 'Pembuatan NIB' && (
+          {(jenisLayanan === 'Pembuatan NIB' || jenisLayanan === 'Pembuatan Sertifikat Halal ( Selfdeclare )') && (
             <div className="animate-enter" style={{ background: 'rgba(0,0,0,0.1)', padding: '1.5rem', borderRadius: '16px', marginTop: '1.5rem' }}>
-              <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: '#10b981' }}>Detail Usaha (Khusus NIB)</h3>
+              <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: '#10b981' }}>Detail Usaha (Data NIB)</h3>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div style={fieldGroupStyle}>
                   <label style={labelStyle}>Nama Usaha *</label>

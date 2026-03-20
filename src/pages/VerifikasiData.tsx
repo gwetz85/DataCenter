@@ -154,7 +154,7 @@ export default function VerifikasiData() {
                         Detail Layanan ({item.jenisLayanan})
                       </h4>
                       
-                      {item.jenisLayanan === 'Pembuatan NIB' && (
+                      {(item.jenisLayanan === 'Pembuatan NIB' || item.jenisLayanan === 'Pembuatan Sertifikat Halal ( Selfdeclare )') && (
                         <dl style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', margin: 0, fontSize: '0.9rem' }}>
                           <div><dt style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>Nama Usaha</dt><dd style={{ margin: 0, fontWeight: 500 }}>{item.namaUsaha || '-'}</dd></div>
                           <div><dt style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>Jenis Usaha</dt><dd style={{ margin: 0, fontWeight: 500 }}>{item.jenisUsaha || '-'}</dd></div>
