@@ -61,8 +61,12 @@
   box-sizing: border-box;
 }
 
-html {
+html, body, #root {
   zoom: 90%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
 body {
@@ -73,8 +77,6 @@ body {
     radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.15) 0px, transparent 50%);
   background-attachment: fixed;
   color: var(--text-main);
-  min-height: 100vh;
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -118,7 +120,8 @@ p { color: var(--text-muted); line-height: 1.6; }
 /* Layout Grid */
 .app-container {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .sidebar {
@@ -196,7 +199,7 @@ p { color: var(--text-muted); line-height: 1.6; }
   box-shadow: 4px 0 24px rgba(0,0,0,0.1);
   display: flex !important;
   flex-direction: column !important;
-  height: 100vh !important;
+  height: 100% !important;
   overflow: hidden !important;
 }
 .new-sidebar .ns-brand {
@@ -356,9 +359,10 @@ p { color: var(--text-muted); line-height: 1.6; }
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
   background: var(--background);
   padding: 1rem;
+  overflow: hidden;
 }
 
 .header {
