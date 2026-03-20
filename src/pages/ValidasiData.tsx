@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { db } from '../config/firebase';
-import { ref, onValue, update } from 'firebase/database';
+import { ref, onValue, update, remove } from 'firebase/database';
 import { useAuth } from '../context/AuthContext';
-import { CheckSquare, ChevronDown, ChevronUp, CheckCircle, Clock } from 'lucide-react';
+import { CheckSquare, ChevronDown, ChevronUp, CheckCircle, Clock, Trash2 } from 'lucide-react';
+import { canPerformAction } from '../utils/permissions';
 
 export default function ValidasiData() {
   const { currentUser } = useAuth();
@@ -41,6 +42,16 @@ export default function ValidasiData() {
     } catch (err) {
       console.error(err);
       alert('Gagal memvalidasi data.');
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('PERINGATAN: Anda yakin ingin menghapus permanen data ini? Tindakan ini tidak data dibatalkan.')) return;
+    try {
+      await remove(ref(db, `pengajuan/${id}`));
+    } catch (err) {
+      console.error(err);
+      alert('Gagal menghapus data.');
     }
   };
 
@@ -164,14 +175,25 @@ export default function ValidasiData() {
                   </div>
 
                   {/* Actions Admin Validasi */}
-                  <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                    <button 
-                      onClick={() => handleValidasiSelesai(item.id)}
-                      style={{ flex: 1, padding: '1rem', borderRadius: '12px', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.2s' }}
-                    >
-                      <CheckCircle size={20} /> Validasi Selesai (Pindahkan ke Finish)
-                    </button>
-                  </div>
+                  {canPerformAction(currentUser?.role || 'Guest', '/validasi-data', 'edit') && (
+                    <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                      <button 
+                        onClick={() => handleValidasiSelesai(item.id)}
+                        style={{ flex: 1, padding: '1rem', borderRadius: '12px', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.2s' }}
+                      >
+                        <CheckCircle size={20} /> Validasi Selesai (Pindahkan ke Finish)
+                      </button>
+                      {canPerformAction(currentUser?.role || 'Guest', '/validasi-data', 'delete') && (
+                        <button 
+                          onClick={() => handleDelete(item.id)}
+                          style={{ padding: '1rem', borderRadius: '12px', background: 'rgba(239, 68, 68, 0.05)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.1)', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.2s' }}
+                          title="Hapus Permanen"
+                        >
+                          <Trash2 size={20} />
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

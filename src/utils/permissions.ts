@@ -19,16 +19,13 @@ export const rolePermissions: Record<Role, MenuPath[]> = {
     '/manajemen-pengguna', '/pengaturan'
   ],
   Verifikator: [
-    '/dashboard', '/registrasi', '/verifikasi-data', '/data-pengajuan', 
-    '/finish', '/data-ditolak', '/pengaturan'
-  ], // No Manajemen Pengguna, No Validasi Data
+    '/dashboard', '/verifikasi-data', '/validasi-data', '/finish', '/pengaturan'
+  ],
   Monitoring: [
-    '/dashboard', '/registrasi', '/verifikasi-data', '/data-pengajuan', 
-    '/validasi-data', '/finish', '/data-ditolak',
-    '/manajemen-pengguna', '/pengaturan'
+    '/dashboard', '/verifikasi-data', '/data-pengajuan', '/validasi-data', '/finish', '/pengaturan'
   ],
   Petugas: [
-    '/dashboard', '/registrasi', '/data-pengajuan', '/finish', '/data-ditolak', '/pengaturan'
+    '/dashboard', '/registrasi', '/data-pengajuan', '/finish', '/pengaturan'
   ],
   Guest: []
 };
@@ -39,15 +36,34 @@ export function canAccessMenu(role: Role, path: MenuPath | string): boolean {
 }
 
 // Check if a role has Edit/Add/Delete permissions for a specific menu
-export function canEdit(role: Role, path: MenuPath | string): boolean {
-  if (role === 'Monitoring') {
-    return false; // Monitoring is globally read-only
-  }
+export function canPerformAction(role: Role, path: MenuPath | string, action: 'view' | 'add' | 'edit' | 'delete'): boolean {
+  if (!canAccessMenu(role, path)) return false;
+  if (action === 'view') return true;
   
-  if (role === 'Petugas' && path === '/finish') {
-    return false; // Petugas is read-only on Finish
+  // Monitoring can ONLY view
+  if (role === 'Monitoring') return false;
+
+  // Admin can do anything on allowed menus
+  if (role === 'Admin') return true;
+
+  // Petugas specific rules
+  if (role === 'Petugas') {
+    if (path === '/registrasi') return action === 'add' || action === 'edit';
+    if (path === '/data-pengajuan') return action === 'edit';
+    return false; // Default for Petugas on other menus (like Finish)
   }
 
-  // Otherwise, if they can access it (and they aren't restricted above), they have edit rights
-  return canAccessMenu(role, path);
+  // Verifikator specific rules
+  if (role === 'Verifikator') {
+    if (path === '/verifikasi-data') return action === 'edit' || action === 'delete';
+    if (path === '/validasi-data') return action === 'edit' || action === 'delete';
+    return false; // Default for Verifikator
+  }
+
+  return false;
+}
+
+// Deprecated for better specificity: canPerformAction
+export function canEdit(role: Role, path: MenuPath | string): boolean {
+  return canPerformAction(role, path, 'edit');
 }

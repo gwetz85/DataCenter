@@ -3,9 +3,11 @@ import { useAuth } from '../context/AuthContext';
 import { db } from '../config/firebase';
 import { ref, push, set } from 'firebase/database';
 import { FileText, Send, AlertCircle, CheckCircle2, Printer } from 'lucide-react';
+import { canPerformAction } from '../utils/permissions';
 
 export default function Registrasi() {
   const { currentUser } = useAuth();
+  const canAdd = currentUser ? canPerformAction(currentUser.role, '/registrasi', 'add') : false;
   
   // Common Fields
   const [nama, setNama] = useState('');
@@ -163,7 +165,14 @@ export default function Registrasi() {
         </div>
       )}
 
-      <div className="glass-card animate-enter printable-form" ref={formRef} style={{ padding: '2.5rem' }}>
+      {!canAdd ? (
+        <div className="glass-card animate-enter" style={{ padding: '3rem', textAlign: 'center' }}>
+          <AlertCircle size={48} color="#ef4444" style={{ marginBottom: '1rem' }} />
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Akses Terbatas</h2>
+          <p style={{ color: 'var(--text-muted)' }}>Anda tidak memiliki izin untuk melakukan registrasi baru.</p>
+        </div>
+      ) : (
+        <div className="glass-card animate-enter printable-form" ref={formRef} style={{ padding: '2.5rem' }}>
         <form onSubmit={handleSubmit}>
           
           <h2 style={{...sectionTitleStyle, marginTop: 0}}>Data Diri Pemohon</h2>
@@ -295,7 +304,8 @@ export default function Registrasi() {
           </div>
 
         </form>
-      </div>
+        </div>
+      )}
     </div>
   );
 }

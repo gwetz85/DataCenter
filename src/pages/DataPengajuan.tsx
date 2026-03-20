@@ -3,6 +3,7 @@ import { db } from '../config/firebase';
 import { ref, onValue, update } from 'firebase/database';
 import { useAuth } from '../context/AuthContext';
 import { Database, ChevronDown, ChevronUp, PlayCircle, Clock, CheckCircle } from 'lucide-react';
+import { canPerformAction } from '../utils/permissions';
 
 export default function DataPengajuan() {
   const { currentUser } = useAuth();
@@ -198,20 +199,22 @@ export default function DataPengajuan() {
                   </div>
 
                   {/* Actions Petugas */}
-                  <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                    <button 
-                      onClick={() => handleUpdateProses(item.id, item.keterangan_proses)}
-                      style={{ flex: 1, padding: '1rem', borderRadius: '12px', background: 'rgba(59, 130, 246, 0.15)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.3)', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.2s' }}
-                    >
-                      <PlayCircle size={20} /> Ubah Status & Keterangan (Proses)
-                    </button>
-                    <button 
-                      onClick={() => handleUpdateWaiting(item.id)}
-                      style={{ flex: 1, padding: '1rem', borderRadius: '12px', background: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.3)', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.2s' }}
-                    >
-                      <CheckCircle size={20} /> Teruskan Ke Admin (Waiting)
-                    </button>
-                  </div>
+                  {canPerformAction(currentUser?.role || 'Guest', '/data-pengajuan', 'edit') && (
+                    <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                      <button 
+                        onClick={() => handleUpdateProses(item.id, item.keterangan_proses)}
+                        style={{ flex: 1, padding: '1rem', borderRadius: '12px', background: 'rgba(59, 130, 246, 0.15)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.3)', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.2s' }}
+                      >
+                        <PlayCircle size={20} /> Ubah Status & Keterangan (Proses)
+                      </button>
+                      <button 
+                        onClick={() => handleUpdateWaiting(item.id)}
+                        style={{ flex: 1, padding: '1rem', borderRadius: '12px', background: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.3)', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.2s' }}
+                      >
+                        <CheckCircle size={20} /> Teruskan Ke Admin (Waiting)
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
