@@ -11,6 +11,7 @@ import ManajemenPengguna from './pages/ManajemenPengguna';
 import Pengaturan from './pages/Pengaturan';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import DataDitolak from './pages/DataDitolak';
 
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -40,6 +41,7 @@ function App() {
               <Route path="validasi-data" element={<ValidasiData />} />
               <Route path="monitoring-pekerjaan" element={<MonitoringPekerjaan />} />
               <Route path="finish" element={<Finish />} />
+              <Route path="data-ditolak" element={<DataDitolak />} />
               <Route path="manajemen-pengguna" element={<ManajemenPengguna />} />
               <Route path="pengaturan" element={<Pengaturan />} />
             </Route>
