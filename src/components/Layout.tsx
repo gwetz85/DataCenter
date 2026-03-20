@@ -4,7 +4,7 @@ import Sidebar from './Sidebar';
 import Header from './Header';
 
 export default function Layout() {
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isSidebarOpen, setSidebarOpen] = useState(true);
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
   return (
     <div className="app-container">

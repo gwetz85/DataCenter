@@ -133,6 +133,16 @@ p { color: var(--text-muted); line-height: 1.6; }
   flex-direction: column;
   padding: 1.5rem 1rem;
   z-index: 10;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-x: hidden;
+}
+
+.sidebar:not(.open) {
+  width: 0;
+  padding: 0;
+  border: none;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .sidebar-header {
@@ -194,12 +204,19 @@ p { color: var(--text-muted); line-height: 1.6; }
   border-right: none;
   border-radius: 0 !important;
   backdrop-filter: none !important;
-  padding: 0 !important; /* Managed by internal sections */
+  padding: 0 !important;
   box-shadow: 4px 0 24px rgba(0,0,0,0.1);
   display: flex !important;
   flex-direction: column !important;
   height: 100% !important;
   overflow: hidden !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.new-sidebar:not(.open) {
+  width: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 .new-sidebar .ns-brand {
   display: flex;
@@ -500,17 +517,20 @@ button:active {
 
 /* Responsive Design */
 @media (max-width: 640px) {
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: -var(--sidebar-width);
-    height: 100vh;
-    transform: translateX(0);
-    transition: left 0.3s ease-in-out;
-    z-index: 1000;
+  .sidebar, .new-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: -var(--sidebar-width) !important;
+    height: 100vh !important;
+    width: var(--sidebar-width) !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: translateX(0) !important;
+    transition: left 0.3s ease-in-out !important;
+    z-index: 1000 !important;
   }
-  .sidebar.open {
-    left: 0;
+  .sidebar.open, .new-sidebar.open {
+    left: 0 !important;
   }
   .app-container {
     flex-direction: column;
@@ -544,9 +564,9 @@ button:active {
     padding: 1rem;
   }
 }
-/* Hide hamburger on larger screens */
+/* Show hamburger on all screens */
 .header .hamburger {
-  display: none;
+  display: block;
   background: transparent;
   border: none;
   color: var(--text-main);

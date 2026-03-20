@@ -12,7 +12,9 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
 
   return (
     <header className="header" style={{ borderBottom: '1px solid var(--border)', background: 'var(--background)' }}>
-      <button className="hamburger" onClick={onToggleSidebar} style={{ background: 'transparent', border: 'none', marginRight: '1rem' }}><Menu size={24} color="var(--text-muted)" /></button>
+      <button className="hamburger" onClick={onToggleSidebar} style={{ background: 'transparent', border: 'none', marginRight: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+        <Menu size={24} color="var(--text-muted)" />
+      </button>
       
       <div className="header-search">
         <Search size={18} style={{ color: 'var(--text-muted)' }} />
