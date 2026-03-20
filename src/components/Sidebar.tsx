@@ -45,16 +45,16 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     <aside className={`sidebar new-sidebar ${isOpen ? 'open' : ''}`}>
       {/* Brand Header */}
       <div className="ns-brand">
-        <Database size={32} strokeWidth={1.5} />
+        <Database size={24} strokeWidth={2} />
         <h1 className="ns-brand-title">DATA CENTRE</h1>
         <p className="ns-brand-subtitle">SISTEM TERPADU</p>
       </div>
 
       {/* Clock Box */}
       <div className="ns-clock-box">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', marginBottom: '0.15rem' }}>
           <span className="ns-clock-label">SERVER REAL-TIME</span>
-          <Clock size={12} />
+          <Clock size={10} />
         </div>
         <div className="ns-clock-time">{timeString}</div>
         <div className="ns-clock-date">{dateString}</div>
@@ -72,10 +72,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               to={item.path}
               onClick={onClose}
               className={({ isActive }) => `ns-nav-item ${isActive ? 'active' : ''}`}
-              style={{ borderRadius: '14px', margin: '2px 0' }}
             >
-              <Icon size={20} strokeWidth={2} />
-              <span style={{ fontWeight: 600 }}>{item.label}</span>
+              <Icon size={18} strokeWidth={2} />
+              <span>{item.label}</span>
             </NavLink>
           );
         })}
@@ -100,8 +99,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
              <span title="Salin ID" style={{ float: 'right', cursor: 'pointer' }}><Copy size={12} style={{ opacity: 0.7 }} /></span>
           </div>
 
-          <button onClick={logout} className="ns-logout-btn" style={{ borderRadius: '14px', marginTop: '1rem', fontWeight: 700 }}>
-            <LogOut size={18} /> Keluar Sistem
+          <button onClick={logout} className="ns-logout-btn">
+            <LogOut size={16} /> Keluar Sistem
           </button>
         </div>
       )}
