@@ -11,8 +11,8 @@ export default function Layout() {
       <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
       <main className="main-content">
         <Header onToggleSidebar={toggleSidebar} />
-        <div className="page-content glass-panel" style={{ margin: '1.5rem', borderBottomLeftRadius: 0, borderBottomRightRadius: 0, borderBottom: 'none' }}>
-          <div className="animate-enter" style={{ height: '100%' }}>
+        <div className="page-content-wrapper glass-panel">
+          <div className="page-content animate-enter">
             <Outlet />
           </div>
         </div>
