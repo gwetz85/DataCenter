@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Database, LogIn } from 'lucide-react';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { login } = useAuth();
@@ -14,13 +14,14 @@ export default function Login() {
     e.preventDefault();
     setError('');
     
-    if (!email || !password) {
-      setError('Mohon isi email atau username dan password.');
+    if (!username || !password) {
+      setError('Mohon isi username dan password.');
       return;
     }
 
     // Allow user to just type 'AGUS' instead of full email
-    const loginEmail = email.includes('@') ? email : `${email.toLowerCase()}@datacenter.com`;
+    // Map Username to a dummy email for Firebase Auth
+    const loginEmail = username.includes('@') ? username : `${username.toLowerCase().replace(/\s+/g, '')}@datacenter.com`;
 
     const { success, message } = await login(loginEmail, password);
     if (success) {
@@ -49,12 +50,12 @@ export default function Login() {
 
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <label style={{ fontSize: '0.875rem', color: 'var(--text-main)' }}>Username / Email</label>
+            <label style={{ fontSize: '0.875rem', color: 'var(--text-main)' }}>Username</label>
             <input 
               type="text" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="AGUS atau email@anda.com"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Contoh: AGUS"
               style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'rgba(255,255,255,0.05)', color: 'white', outline: 'none' }}
             />
           </div>

@@ -7,13 +7,11 @@ import {
   type User as FirebaseUser
 } from 'firebase/auth';
 import { 
-  collection, 
-  doc, 
-  setDoc, 
-  updateDoc, 
-  onSnapshot,
-  query
-} from 'firebase/firestore';
+  ref, 
+  set, 
+  update, 
+  onValue 
+} from 'firebase/database';
 import { auth, db } from '../config/firebase';
 import type { User, Role, UserStatus } from '../types/auth';
 
@@ -34,14 +32,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // 1. Sync the Users collection from Firestore real-time
+  // 1. Sync the Users collection from Realtime Database real-time
   useEffect(() => {
-    const q = query(collection(db, 'users'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const usersRef = ref(db, 'users');
+    const unsubscribe = onValue(usersRef, (snapshot) => {
       const usersData: User[] = [];
-      snapshot.forEach((docSnap) => {
-        usersData.push({ id: docSnap.id, ...docSnap.data() } as User);
-      });
+      const data = snapshot.val();
+      if (data) {
+        Object.keys(data).forEach((uid) => {
+          usersData.push({ id: uid, ...data[uid] } as User);
+        });
+      }
       setUsers(usersData);
     });
     return () => unsubscribe();
@@ -99,8 +100,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         status: 'pending'
       };
 
-      // Create their profile in the Firestore database
-      await setDoc(doc(db, 'users', userUid), newUser);
+      // Create their profile in the Realtime Database
+      await set(ref(db, `users/${userUid}`), newUser);
 
       // Sign them out immediately? Or leave them signed in but status='pending'
       // If they are signed in but pending, the ProtectedRoute will handle it.
@@ -119,8 +120,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const updateUserRole = async (userId: string, newRole: Role, newStatus: UserStatus) => {
     try {
-      const userRef = doc(db, 'users', userId);
-      await updateDoc(userRef, {
+      const userRef = ref(db, `users/${userId}`);
+      await update(userRef, {
         role: newRole,
         status: newStatus
       });

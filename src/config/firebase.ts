@@ -1,15 +1,15 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getDatabase } from "firebase/database";
 
-// TODO: Replace this object with your actual Firebase config!
 const firebaseConfig = {
   apiKey: "AIzaSyCfdD3EZMC-ULUrMElw5BmTvJXV2KSvYiE",
   authDomain: "data-centre-598dd.firebaseapp.com",
   projectId: "data-centre-598dd",
   storageBucket: "data-centre-598dd.firebasestorage.app",
   messagingSenderId: "505360302690",
-  appId: "1:505360302690:web:a8c0646f406a4cbcd6473b"
+  appId: "1:505360302690:web:a8c0646f406a4cbcd6473b",
+  databaseURL: "https://data-centre-598dd-default-rtdb.firebaseio.com"
 };
 
 // Initialize Firebase
@@ -17,4 +17,4 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase services
 export const auth = getAuth(app);
-export const db = getFirestore(app);
+export const db = getDatabase(app);
