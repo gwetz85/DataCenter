@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { useState } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import Chat from './Chat';
 
 export default function Layout() {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -16,6 +17,7 @@ export default function Layout() {
             <Outlet />
           </div>
         </div>
+        <Chat />
         {/* Overlay for mobile drawer */}
         {isSidebarOpen && <div className="overlay" onClick={toggleSidebar}></div>}
       </main>

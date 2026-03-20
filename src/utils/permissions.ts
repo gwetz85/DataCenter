@@ -9,6 +9,7 @@ type MenuPath =
   | '/finish' 
   | '/data-ditolak'
   | '/manajemen-pengguna' 
+  | '/chat-monitoring'
   | '/pengaturan';
 
 // Define which menus are accessible by each role
@@ -16,7 +17,7 @@ export const rolePermissions: Record<Role, MenuPath[]> = {
   Admin: [
     '/dashboard', '/registrasi', '/verifikasi-data', '/data-pengajuan', 
     '/validasi-data', '/finish', '/data-ditolak',
-    '/manajemen-pengguna', '/pengaturan'
+    '/manajemen-pengguna', '/chat-monitoring', '/pengaturan'
   ],
   Verifikator: [
     '/dashboard', '/verifikasi-data', '/validasi-data', '/finish', '/pengaturan'
