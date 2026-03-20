@@ -5,7 +5,7 @@ import { canAccessMenu } from '../utils/permissions';
 import { useState, useEffect } from 'react';
 import {
   LayoutDashboard, UserPlus, FileCheck, CheckSquare,
-  Activity, CheckCircle, Users, Settings, Database, LogOut, Copy, RefreshCw, Clock, XCircle
+  Activity, CheckCircle, Users, Settings, Database, LogOut, Copy, RefreshCw, Clock
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -15,15 +15,14 @@ interface SidebarProps {
 
 const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/registrasi', label: 'Input Data', icon: UserPlus },
-  { path: '/data-pengajuan', label: 'Total Register', icon: Database },
-  { path: '/verifikasi-data', label: 'Terverifikasi', icon: FileCheck },
-  { path: '/validasi-data', label: 'Tervalidasi', icon: CheckSquare },
-  { path: '/monitoring-pekerjaan', label: 'Monitoring Aktif', icon: Activity },
-  { path: '/data-ditolak', label: 'Data Ditolak', icon: XCircle },
-  { path: '/finish', label: 'Data Selesai', icon: CheckCircle },
-  { path: '/manajemen-pengguna', label: 'Data Pengguna', icon: Users },
-  { path: '/pengaturan', label: 'Opsi System', icon: Settings },
+  { path: '/registrasi', label: 'Registrasi', icon: UserPlus },
+  { path: '/verifikasi-data', label: 'Verifikasi Data', icon: FileCheck },
+  { path: '/data-pengajuan', label: 'Data Pengajuan', icon: Database },
+  { path: '/validasi-data', label: 'Validasi Data', icon: CheckSquare },
+  { path: '/monitoring-pekerjaan', label: 'Monitoring Pekerjaan', icon: Activity },
+  { path: '/finish', label: 'Finish', icon: CheckCircle },
+  { path: '/manajemen-pengguna', label: 'Manajemen Pengguna', icon: Users },
+  { path: '/pengaturan', label: 'Pengaturan', icon: Settings },
 ];
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
