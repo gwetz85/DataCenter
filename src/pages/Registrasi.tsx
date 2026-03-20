@@ -14,6 +14,8 @@ export default function Registrasi() {
   const [jenisKelamin, setJenisKelamin] = useState('');
   const [nik, setNik] = useState('');
   const [nomorKk, setNomorKk] = useState('');
+  const [tempatLahir, setTempatLahir] = useState('');
+  const [tanggalLahir, setTanggalLahir] = useState('');
   const [nomorPonsel, setNomorPonsel] = useState('');
   const [alamat, setAlamat] = useState('');
   const [jenisLayanan, setJenisLayanan] = useState('');
@@ -39,7 +41,7 @@ export default function Registrasi() {
   const formRef = useRef<HTMLDivElement>(null);
 
   const resetForm = () => {
-    setNama(''); setJenisKelamin(''); setNik(''); setNomorKk(''); setNomorPonsel(''); setAlamat(''); setJenisLayanan('');
+    setNama(''); setJenisKelamin(''); setNik(''); setNomorKk(''); setTempatLahir(''); setTanggalLahir(''); setNomorPonsel(''); setAlamat(''); setJenisLayanan('');
     setNamaUsaha(''); setLokasiUsaha(''); setJenisUsaha(''); setModalUsaha(''); setLamaUsaha('');
     setNamaProduk(''); setLokasiPabrik(''); setBahanDigunakan(''); setBahanPembersih(''); setBahanKemasan(''); setTataCaraPembuatan('');
   };
@@ -53,8 +55,8 @@ export default function Registrasi() {
     setStatus(null);
 
     // Basic Validation for common fields
-    if (!nama || !jenisKelamin || !nik || !nomorKk || !nomorPonsel || !alamat || !jenisLayanan) {
-      setStatus({ type: 'error', msg: 'Mohon isi semua data diri dan pilih jenis layanan.' });
+    if (!nama || !jenisKelamin || !nik || !nomorKk || !tempatLahir || !tanggalLahir || !nomorPonsel || !alamat || !jenisLayanan) {
+      setStatus({ type: 'error', msg: 'Mohon isi semua data diri termasuk Tempat/Tanggal lahir dan jenis layanan.' });
       return;
     }
 
@@ -92,6 +94,8 @@ export default function Registrasi() {
         jenisKelamin,
         nik,
         nomorKk,
+        tempatLahir,
+        tanggalLahir,
         nomorPonsel,
         alamat,
         jenisLayanan,
@@ -125,10 +129,20 @@ export default function Registrasi() {
     setIsSubmitting(false);
   };
 
-  const inputStyle = { padding: '1rem', borderRadius: '14px', border: '1px solid var(--border)', background: 'rgba(255,255,255,0.03)', color: 'var(--text-main)', outline: 'none', fontSize: '0.95rem', width: '100%' };
-  const labelStyle = { fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '0.5rem', display: 'block' };
+  const inputStyle = { 
+    padding: '1rem', 
+    borderRadius: '14px', 
+    border: '2px solid var(--border)', 
+    background: 'rgba(255,255,255,0.05)', 
+    color: 'var(--text-main)', 
+    outline: 'none', 
+    fontSize: '0.95rem', 
+    width: '100%',
+    transition: 'all 0.3s ease'
+  };
+  const labelStyle = { fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-main)', marginBottom: '0.5rem', display: 'block' };
   const fieldGroupStyle = { marginBottom: '1.25rem' };
-  const sectionTitleStyle = { fontSize: '1.2rem', fontWeight: 800, margin: '2rem 0 1rem 0', paddingBottom: '0.5rem', borderBottom: '2px solid rgba(255,255,255,0.05)' };
+  const sectionTitleStyle = { fontSize: '1.25rem', fontWeight: 900, margin: '2.5rem 0 1.25rem 0', paddingBottom: '0.6rem', borderBottom: '2px solid rgba(255,255,255,0.1)' };
 
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto' }}>
@@ -196,6 +210,14 @@ export default function Registrasi() {
             <div style={fieldGroupStyle}>
               <label style={labelStyle}>Nomor KK *</label>
               <input type="number" value={nomorKk} onChange={e => setNomorKk(e.target.value)} style={inputStyle} required />
+            </div>
+            <div style={fieldGroupStyle}>
+              <label style={labelStyle}>Tempat Lahir *</label>
+              <input type="text" value={tempatLahir} onChange={e => setTempatLahir(e.target.value)} placeholder="Misal: Jakarta" style={inputStyle} required />
+            </div>
+            <div style={fieldGroupStyle}>
+              <label style={labelStyle}>Tanggal Lahir *</label>
+              <input type="date" value={tanggalLahir} onChange={e => setTanggalLahir(e.target.value)} style={inputStyle} required />
             </div>
             <div style={fieldGroupStyle}>
               <label style={labelStyle}>Nomor Ponsel (WhatsApp) *</label>

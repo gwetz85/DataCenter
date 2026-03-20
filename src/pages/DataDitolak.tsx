@@ -64,7 +64,10 @@ export default function DataDitolak() {
             </div>
             
             <h3 style={{ fontSize: '1.1rem', fontWeight: 800, margin: '0 0 0.25rem 0' }}>{item.nama}</h3>
-            <p style={{ fontSize: '0.8rem', opacity: 0.6, margin: '0 0 1rem 0' }}>NIK: {item.nik}</p>
+            <p style={{ fontSize: '0.8rem', opacity: 0.6, margin: '0 0 0.5rem 0' }}>NIK: {item.nik}</p>
+            <p style={{ fontSize: '0.8rem', opacity: 0.8, fontWeight: 600, margin: '0 0 1rem 0', color: 'var(--text-muted)' }}>
+              Lahir: {item.tempatLahir || '-'}{item.tanggalLahir ? ` / ${item.tanggalLahir}` : ''}
+            </p>
             
             <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
