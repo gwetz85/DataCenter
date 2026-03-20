@@ -19,11 +19,17 @@ export default function Login() {
       return;
     }
 
-    // Allow user to just type 'AGUS' instead of full email
     // Map Username to a dummy email for Firebase Auth
     const loginEmail = username.includes('@') ? username : `${username.toLowerCase().replace(/\s+/g, '')}@datacenter.com`;
 
-    const { success, message } = await login(loginEmail, password);
+    // Handle Device ID
+    let deviceId = localStorage.getItem('datapusat_device_id');
+    if (!deviceId) {
+      deviceId = crypto.randomUUID();
+      localStorage.setItem('datapusat_device_id', deviceId);
+    }
+
+    const { success, message } = await login(loginEmail, password, deviceId);
     if (success) {
       navigate('/dashboard');
     } else {

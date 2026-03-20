@@ -22,10 +22,12 @@ interface AuthContextType {
   currentUser: User | null;
   users: User[];
   loading: boolean;
-  login: (email: string, pass: string) => Promise<{ success: boolean; message?: string }>;
+  login: (email: string, pass: string, deviceId: string) => Promise<{ success: boolean; message?: string }>;
   register: (name: string, email: string, pass: string) => Promise<{ success: boolean; message?: string }>;
   logout: () => Promise<void>;
   updateUserRole: (userId: string, newRole: Role, newStatus: UserStatus) => Promise<void>;
+  resetUserDevice: (userId: string) => Promise<void>;
+  deleteUserAccount: (userId: string) => Promise<void>;
   changePassword: (oldPass: string, newPass: string) => Promise<{ success: boolean; message?: string }>;
 }
 
@@ -82,13 +84,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => unsubscribeAuth();
   }, [users]); // Re-run when users array changes so currentUser grabs its real profile data
 
-  const login = async (email: string, pass: string) => {
+  const login = async (email: string, pass: string, deviceId: string) => {
     try {
-      await signInWithEmailAndPassword(auth, email, pass);
+      const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+      const uid = userCredential.user.uid;
+
+      // Check deviceId in Realtime Database manually immediately
+      const userSnapshotPromise = new Promise<any>((resolve) => {
+        onValue(ref(db, `users/${uid}`), (snap) => resolve(snap.val()), { onlyOnce: true });
+      });
+      const userData = await userSnapshotPromise;
+
+      if (userData) {
+        if (!userData.deviceId) {
+          // First time login or reset - save this device
+          await update(ref(db, `users/${uid}`), { deviceId });
+        } else if (userData.deviceId !== deviceId) {
+          // Device mismatch
+          await signOut(auth);
+          return { 
+            success: false, 
+            message: 'Perangkat tidak dikenali. Silakan hubungi Admin untuk reset ID perangkat.' 
+          };
+        }
+      }
+
       return { success: true };
     } catch (err: any) {
       console.error(err);
-      return { success: false, message: 'Email atau password salah.' };
+      if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+        return { success: false, message: 'Email atau password salah.' };
+      }
+      return { success: false, message: 'Login gagal.' };
     }
   };
 
@@ -134,6 +161,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const resetUserDevice = async (userId: string) => {
+    try {
+      await update(ref(db, `users/${userId}`), { deviceId: null });
+    } catch (err) {
+      console.error("Error resetting device: ", err);
+    }
+  };
+
+  const deleteUserAccount = async (userId: string) => {
+    try {
+      // Just delete from DB - we can't easily delete from Auth without re-auth
+      await set(ref(db, `users/${userId}`), null);
+    } catch (err) {
+      console.error("Error deleting user: ", err);
+    }
+  };
+
   const changePassword = async (oldPass: string, newPass: string) => {
     if (!auth.currentUser || !auth.currentUser.email) return { success: false, message: 'Tidak ada sesi aktif.' };
     try {
@@ -151,7 +195,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ currentUser, users, loading, login, register, logout, updateUserRole, changePassword }}>
+    <AuthContext.Provider value={{ 
+      currentUser, users, loading, login, register, logout, 
+      updateUserRole, resetUserDevice, deleteUserAccount, changePassword 
+    }}>
       {children}
     </AuthContext.Provider>
   );

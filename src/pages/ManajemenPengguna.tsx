@@ -1,9 +1,9 @@
 import { useAuth } from '../context/AuthContext';
-import { ShieldCheck, UserX, UserCheck, ChevronDown } from 'lucide-react';
+import { ShieldCheck, UserX, UserCheck, ChevronDown, Smartphone, Trash2, RotateCcw } from 'lucide-react';
 import type { Role, UserStatus } from '../types/auth';
 
 export default function ManajemenPengguna() {
-  const { users, updateUserRole, currentUser } = useAuth();
+  const { users, updateUserRole, currentUser, resetUserDevice, deleteUserAccount } = useAuth();
 
   const handleRoleChange = (userId: string, newRole: Role, currentStatus: UserStatus) => {
     updateUserRole(userId, newRole, currentStatus);
@@ -17,6 +17,18 @@ export default function ManajemenPengguna() {
 
   const handleDeactivate = (userId: string, currentRole: Role) => {
     updateUserRole(userId, currentRole, 'pending');
+  };
+
+  const handleResetDevice = async (userId: string, name: string) => {
+    if (window.confirm(`Reset ID perangkat untuk ${name}?`)) {
+      await resetUserDevice(userId);
+    }
+  };
+
+  const handleDeleteUser = async (userId: string, name: string) => {
+    if (window.confirm(`Hapus data user ${name}? Tindakan ini tidak dapat dibatalkan.`)) {
+      await deleteUserAccount(userId);
+    }
   };
 
   return (
@@ -37,6 +49,7 @@ export default function ManajemenPengguna() {
               <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid var(--border)' }}>
                 <th style={{ padding: '1.25rem 1.5rem', color: 'var(--text-muted)', fontWeight: 700, fontSize: '0.8rem', letterSpacing: '1px' }}>NAMA / EMAIL</th>
                 <th style={{ padding: '1.25rem 1.5rem', color: 'var(--text-muted)', fontWeight: 700, fontSize: '0.8rem', letterSpacing: '1px' }}>ROLE</th>
+                <th style={{ padding: '1.25rem 1.5rem', color: 'var(--text-muted)', fontWeight: 700, fontSize: '0.8rem', letterSpacing: '1px' }}>DEVICE ID</th>
                 <th style={{ padding: '1.25rem 1.5rem', color: 'var(--text-muted)', fontWeight: 700, fontSize: '0.8rem', letterSpacing: '1px' }}>STATUS</th>
                 <th style={{ padding: '1.25rem 1.5rem', color: 'var(--text-muted)', fontWeight: 700, fontSize: '0.8rem', letterSpacing: '1px', textAlign: 'right' }}>AKSI</th>
               </tr>
@@ -88,6 +101,16 @@ export default function ManajemenPengguna() {
                       )}
                   </td>
                   <td style={{ padding: '1.25rem 1.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: u.deviceId ? 'var(--text-main)' : 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>
+                      <Smartphone size={14} style={{ opacity: 0.5 }} />
+                      {u.deviceId ? (
+                        <span title={u.deviceId}>{u.deviceId.substring(0, 8)}...</span>
+                      ) : (
+                        <span style={{ fontStyle: 'italic', opacity: 0.5 }}>Belum Terdaftar</span>
+                      )}
+                    </div>
+                  </td>
+                  <td style={{ padding: '1.25rem 1.5rem' }}>
                     {u.status === 'active' ? (
                       <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '30px', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', fontSize: '0.8rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
                         <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 10px #10b981' }}></span> Aktif
@@ -116,6 +139,24 @@ export default function ManajemenPengguna() {
                             <UserX size={16} /> Nonaktifkan
                           </button>
                         )}
+                        
+                        {u.deviceId && (
+                          <button 
+                            onClick={() => handleResetDevice(u.id, u.name)}
+                            title="Reset Perangkat"
+                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.2)', width: '38px', height: '38px', borderRadius: '10px', cursor: 'pointer', transition: 'all 0.2s' }}
+                          >
+                            <RotateCcw size={16} />
+                          </button>
+                        )}
+
+                        <button 
+                          onClick={() => handleDeleteUser(u.id, u.name)}
+                          title="Hapus User"
+                          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', width: '38px', height: '38px', borderRadius: '10px', cursor: 'pointer', transition: 'all 0.2s' }}
+                        >
+                          <Trash2 size={16} />
+                        </button>
                       </div>
                     )}
                   </td>
