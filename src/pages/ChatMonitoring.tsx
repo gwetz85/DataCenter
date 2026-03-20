@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { db } from '../config/firebase';
-import { ref, onValue } from 'firebase/database';
-import { MessageSquare, ShieldAlert } from 'lucide-react';
+import { ref, onValue, remove } from 'firebase/database';
+import { MessageSquare, ShieldAlert, Trash2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function ChatMonitoring() {
@@ -9,6 +9,26 @@ export default function ChatMonitoring() {
   const [sessions, setSessions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+
+  const handleDeleteSession = async (chatId: string) => {
+    if (!window.confirm('Apakah Anda yakin ingin menghapus seluruh riwayat percakapan ini secara permanen?')) return;
+    
+    try {
+      await remove(ref(db, `messages/${chatId}`));
+      await remove(ref(db, `unread`)); // Optional: clear all unreads related to this would be better but simplified for now
+      // More precise: for each user in chatId
+      const parts = chatId.split('_');
+      parts.forEach(async (uid) => {
+        await remove(ref(db, `unread/${uid}/${chatId}`));
+      });
+
+      setSelectedSessionId(null);
+      alert('Percakapan telah dihapus.');
+    } catch (err) {
+      console.error(err);
+      alert('Gagal menghapus percakapan.');
+    }
+  };
 
   useEffect(() => {
     const messagesRef = ref(db, 'messages');
@@ -94,9 +114,17 @@ export default function ChatMonitoring() {
         <div className="glass-card" style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
           {selectedSessionId ? (
             <>
-              <div style={{ padding: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(255,255,255,0.02)' }}>
-                <h3 style={{ margin: 0 }}>Detail Percakapan</h3>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>ID: {selectedSessionId}</span>
+              <div style={{ padding: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(255,255,255,0.02)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <h3 style={{ margin: 0 }}>Detail Percakapan</h3>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>ID: {selectedSessionId}</span>
+                </div>
+                <button 
+                  onClick={() => handleDeleteSession(selectedSessionId)}
+                  style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '0.5rem 1rem', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontWeight: 700, fontSize: '0.8rem' }}
+                >
+                  <Trash2 size={16} /> Hapus History
+                </button>
               </div>
               <div style={{ flex: 1, overflowY: 'auto', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 {sessions.find(s => s.id === selectedSessionId)?.messages.map((msg: any, idx: number) => (

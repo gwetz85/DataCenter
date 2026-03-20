@@ -119,7 +119,7 @@ export default function Chat() {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="animate-slide-up" style={{
+        <div className="animate-slide-up chat-window-container" style={{
           width: '380px', height: '550px', display: 'flex', flexDirection: 'column',
           overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.15)', border: '1px solid var(--border)',
           background: 'white', borderRadius: '24px'

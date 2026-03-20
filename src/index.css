@@ -644,6 +644,21 @@ button:active {
   animation: slideUp 0.3s ease-out forwards;
 }
 
+/* Chat Responsive */
+@media (max-width: 768px) {
+  .chat-window-container {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 90vw !important;
+    height: 80vh !important;
+    max-width: 400px !important;
+    border-radius: 24px !important;
+    animation: slideUp 0.3s ease-out forwards !important;
+  }
+}
+
 /* Chat bubble bounce */
 @keyframes bounce-subtle {
   0%, 100% { transform: translateY(0); }
