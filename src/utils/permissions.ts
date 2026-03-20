@@ -6,7 +6,6 @@ type MenuPath =
   | '/verifikasi-data' 
   | '/data-pengajuan' 
   | '/validasi-data' 
-  | '/monitoring-pekerjaan' 
   | '/finish' 
   | '/data-ditolak'
   | '/manajemen-pengguna' 
@@ -16,16 +15,16 @@ type MenuPath =
 export const rolePermissions: Record<Role, MenuPath[]> = {
   Admin: [
     '/dashboard', '/registrasi', '/verifikasi-data', '/data-pengajuan', 
-    '/validasi-data', '/monitoring-pekerjaan', '/finish', '/data-ditolak',
+    '/validasi-data', '/finish', '/data-ditolak',
     '/manajemen-pengguna', '/pengaturan'
   ],
   Verifikator: [
     '/dashboard', '/registrasi', '/verifikasi-data', '/data-pengajuan', 
-    '/monitoring-pekerjaan', '/finish', '/data-ditolak', '/pengaturan'
+    '/finish', '/data-ditolak', '/pengaturan'
   ], // No Manajemen Pengguna, No Validasi Data
   Monitoring: [
     '/dashboard', '/registrasi', '/verifikasi-data', '/data-pengajuan', 
-    '/validasi-data', '/monitoring-pekerjaan', '/finish', '/data-ditolak',
+    '/validasi-data', '/finish', '/data-ditolak',
     '/manajemen-pengguna', '/pengaturan'
   ],
   Petugas: [

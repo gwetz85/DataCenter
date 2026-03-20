@@ -5,7 +5,6 @@ import Registrasi from './pages/Registrasi';
 import VerifikasiData from './pages/VerifikasiData';
 import DataPengajuan from './pages/DataPengajuan';
 import ValidasiData from './pages/ValidasiData';
-import MonitoringPekerjaan from './pages/MonitoringPekerjaan';
 import Finish from './pages/Finish';
 import ManajemenPengguna from './pages/ManajemenPengguna';
 import Pengaturan from './pages/Pengaturan';
@@ -39,7 +38,6 @@ function App() {
               <Route path="verifikasi-data" element={<VerifikasiData />} />
               <Route path="data-pengajuan" element={<DataPengajuan />} />
               <Route path="validasi-data" element={<ValidasiData />} />
-              <Route path="monitoring-pekerjaan" element={<MonitoringPekerjaan />} />
               <Route path="finish" element={<Finish />} />
               <Route path="data-ditolak" element={<DataDitolak />} />
               <Route path="manajemen-pengguna" element={<ManajemenPengguna />} />

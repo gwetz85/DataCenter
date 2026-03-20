@@ -552,3 +552,58 @@ button:active {
   color: var(--text-main);
   cursor: pointer;
 }
+
+/* --- Print Styles --- */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+  .sidebar, .new-sidebar, .ns-brand, .ns-clock-box, .ns-user-footer, .no-print {
+    display: none !important;
+  }
+  .app-container {
+    height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+  .main-content {
+    background: white !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .page-content {
+    zoom: 1 !important;
+    padding: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .glass-card {
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  /* Simplify inputs for printing */
+  input, select, textarea {
+    border: none !important;
+    border-bottom: 1px solid #ccc !important;
+    padding: 0.25rem 0 !important;
+    background: transparent !important;
+    color: black !important;
+    font-size: 10pt !important;
+    border-radius: 0 !important;
+  }
+  label {
+    color: black !important;
+    font-size: 10pt !important;
+    margin-bottom: 0 !important;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: black !important;
+  }
+}
