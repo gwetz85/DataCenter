@@ -60,11 +60,10 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         <div className="ns-clock-date">{dateString}</div>
       </div>
 
-      {/* Nav Menu */}
-      <div style={{ padding: '0 1.25rem', marginBottom: '0.75rem' }}>
-        <span style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.12em', opacity: 0.6, color: 'white' }}>MENU UTAMA</span>
-      </div>
       <nav className="ns-nav-menu">
+        <div style={{ padding: '0 0.5rem', marginBottom: '0.5rem' }}>
+          <span style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.12em', opacity: 0.6, color: 'white' }}>MENU UTAMA</span>
+        </div>
         {visibleNavItems.map((item) => {
           const Icon = item.icon;
           return (
@@ -81,8 +80,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           );
         })}
       </nav>
-
-      <div style={{ flex: 1 }}></div>
 
       {/* User Profile Footer */}
       {currentUser && (

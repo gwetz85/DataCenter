@@ -192,8 +192,12 @@ p { color: var(--text-muted); line-height: 1.6; }
   border-right: none;
   border-radius: 0 !important;
   backdrop-filter: none !important;
-  padding: 1.5rem 0.5rem;
+  padding: 0 !important; /* Managed by internal sections */
   box-shadow: 4px 0 24px rgba(0,0,0,0.1);
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100vh !important;
+  overflow: hidden !important;
 }
 .new-sidebar .ns-brand {
   display: flex;
@@ -201,6 +205,7 @@ p { color: var(--text-muted); line-height: 1.6; }
   align-items: center;
   text-align: center;
   padding: 1rem 0 2rem 0;
+  flex-shrink: 0;
 }
 .new-sidebar .ns-brand-title {
   font-size: 1.25rem;
@@ -223,6 +228,7 @@ p { color: var(--text-muted); line-height: 1.6; }
   margin: 0 1.25rem 2rem 1.25rem;
   text-align: center;
   border: 1px solid rgba(255,255,255,0.05);
+  flex-shrink: 0;
 }
 .new-sidebar .ns-clock-label {
   font-size: 0.7rem;
@@ -243,8 +249,26 @@ p { color: var(--text-muted); line-height: 1.6; }
 .new-sidebar .ns-nav-menu {
   display: flex;
   flex-direction: column;
-  padding: 0 0.75rem;
+  padding: 0 0.75rem 1.5rem 0.75rem;
   gap: 0.5rem;
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.2) transparent;
+}
+
+.new-sidebar .ns-nav-menu::-webkit-scrollbar {
+  width: 4px;
+}
+.new-sidebar .ns-nav-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+.new-sidebar .ns-nav-menu::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
+  border-radius: 10px;
+}
+.new-sidebar .ns-nav-menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.4);
 }
 .new-sidebar .ns-nav-item {
   display: flex;
@@ -272,6 +296,7 @@ p { color: var(--text-muted); line-height: 1.6; }
   padding: 1.25rem;
   margin-top: auto;
   border-top: 1px solid rgba(255,255,255,0.1);
+  flex-shrink: 0;
 }
 .new-sidebar .ns-user-card {
   background: rgba(0,0,0,0.1);
