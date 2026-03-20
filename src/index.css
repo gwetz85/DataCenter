@@ -62,7 +62,6 @@
 }
 
 html, body, #root {
-  zoom: 90%;
   height: 100vh;
   margin: 0;
   padding: 0;
@@ -396,6 +395,7 @@ p { color: var(--text-muted); line-height: 1.6; }
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--primary) transparent;
+  zoom: 95%;
 }
 
 /* Custom Scrollbar */
