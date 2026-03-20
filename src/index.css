@@ -14,6 +14,44 @@
   --sidebar-width: 280px;
 }
 
+/* --- Theme Overrides --- */
+:root[data-theme="light"] {
+  --background: #f1f5f9;
+  --surface: rgba(255, 255, 255, 0.8);
+  --surface-hover: rgba(255, 255, 255, 1);
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --border: rgba(0, 0, 0, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* --- Color Palettes --- */
+:root[data-color="merah"] {
+  --primary: #ef4444;
+  --primary-hover: #dc2626;
+  --secondary: #f59e0b;
+}
+:root[data-color="oren"] {
+  --primary: #f97316;
+  --primary-hover: #ea580c;
+  --secondary: #ec4899;
+}
+:root[data-color="kuning"] {
+  --primary: #eab308;
+  --primary-hover: #ca8a04;
+  --secondary: #14b8a6;
+}
+:root[data-color="jingga"] {
+  --primary: #8b5cf6;
+  --primary-hover: #7c3aed;
+  --secondary: #f43f5e;
+}
+:root[data-color="hijau"] {
+  --primary: #10b981;
+  --primary-hover: #059669;
+  --secondary: #3b82f6;
+}
+
 * {
   margin: 0;
   padding: 0;

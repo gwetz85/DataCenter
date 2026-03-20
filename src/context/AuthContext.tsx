@@ -4,6 +4,9 @@ import {
   createUserWithEmailAndPassword, 
   signOut, 
   onAuthStateChanged,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updatePassword,
   type User as FirebaseUser
 } from 'firebase/auth';
 import { 
@@ -23,6 +26,7 @@ interface AuthContextType {
   register: (name: string, email: string, pass: string) => Promise<{ success: boolean; message?: string }>;
   logout: () => Promise<void>;
   updateUserRole: (userId: string, newRole: Role, newStatus: UserStatus) => Promise<void>;
+  changePassword: (oldPass: string, newPass: string) => Promise<{ success: boolean; message?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -130,8 +134,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const changePassword = async (oldPass: string, newPass: string) => {
+    if (!auth.currentUser || !auth.currentUser.email) return { success: false, message: 'Tidak ada sesi aktif.' };
+    try {
+      const credential = EmailAuthProvider.credential(auth.currentUser.email, oldPass);
+      await reauthenticateWithCredential(auth.currentUser, credential);
+      await updatePassword(auth.currentUser, newPass);
+      return { success: true, message: 'Kata sandi berhasil diubah.' };
+    } catch (err: any) {
+      console.error(err);
+      if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+        return { success: false, message: 'Kata sandi lama salah.' };
+      }
+      return { success: false, message: 'Gagal mengubah kata sandi.' };
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ currentUser, users, loading, login, register, logout, updateUserRole }}>
+    <AuthContext.Provider value={{ currentUser, users, loading, login, register, logout, updateUserRole, changePassword }}>
       {children}
     </AuthContext.Provider>
   );
