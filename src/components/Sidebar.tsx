@@ -1,5 +1,7 @@
 
 import { NavLink } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { canAccessMenu } from '../utils/permissions';
 import {
   LayoutDashboard,
   UserPlus,
@@ -32,6 +34,11 @@ const navItems = [
 ];
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const { user } = useAuth();
+  
+  // Filter navigation items based on the user's role
+  const visibleNavItems = navItems.filter(item => canAccessMenu(user.role, item.path));
+
   return (
     <aside className={`sidebar glass-panel ${isOpen ? 'open' : ''}`} style={{ borderRadius: '0', borderLeft: 'none', borderTop: 'none', borderBottom: 'none' }}>
       <div className="sidebar-header">
@@ -39,7 +46,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         <span>Data Centre</span>
       </div>
       <nav className="nav-menu">
-        {navItems.map((item) => {
+        {visibleNavItems.map((item) => {
           const Icon = item.icon;
           return (
             <NavLink
