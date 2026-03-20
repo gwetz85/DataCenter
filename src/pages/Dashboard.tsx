@@ -9,28 +9,28 @@ export default function Dashboard() {
           <div className="stat-icon"><Users size={24} /></div>
           <div className="stat-info">
             <h3>Total Register</h3>
-            <p>1,245</p>
+            <p>0</p>
           </div>
         </div>
         <div className="glass-card stat-card">
           <div className="stat-icon"><FileCheck size={24} /></div>
           <div className="stat-info">
             <h3>Data Terverifikasi</h3>
-            <p>850</p>
+            <p>0</p>
           </div>
         </div>
         <div className="glass-card stat-card">
           <div className="stat-icon"><CheckSquare size={24} /></div>
           <div className="stat-info">
             <h3>Data Tervalidasi</h3>
-            <p>420</p>
+            <p>0</p>
           </div>
         </div>
         <div className="glass-card stat-card">
           <div className="stat-icon"><Activity size={24} /></div>
           <div className="stat-info">
             <h3>Monitoring Aktif</h3>
-            <p>12</p>
+            <p>0</p>
           </div>
         </div>
       </div>
