@@ -61,8 +61,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       </div>
 
       {/* Nav Menu */}
-      <div style={{ padding: '0 1rem', marginBottom: '0.5rem' }}>
-        <span style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.1em', opacity: 0.7 }}>MENU UTAMA</span>
+      <div style={{ padding: '0 1.25rem', marginBottom: '0.75rem' }}>
+        <span style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.12em', opacity: 0.6, color: 'white' }}>MENU UTAMA</span>
       </div>
       <nav className="ns-nav-menu">
         {visibleNavItems.map((item) => {
@@ -73,9 +73,10 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               to={item.path}
               onClick={onClose}
               className={({ isActive }) => `ns-nav-item ${isActive ? 'active' : ''}`}
+              style={{ borderRadius: '14px', margin: '2px 0' }}
             >
-              <Icon size={18} />
-              <span>{item.label}</span>
+              <Icon size={20} strokeWidth={2} />
+              <span style={{ fontWeight: 600 }}>{item.label}</span>
             </NavLink>
           );
         })}
@@ -85,25 +86,25 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
       {/* User Profile Footer */}
       {currentUser && (
-        <div className="ns-user-footer">
-          <div className="ns-user-card">
-            <div className="ns-user-avatar">
-              <span style={{ fontWeight: 800 }}>{currentUser.name.charAt(0).toUpperCase()}</span>
+        <div className="ns-user-footer" style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem' }}>
+          <div className="ns-user-card" style={{ borderRadius: '18px', padding: '0.75rem', background: 'rgba(255,255,255,0.05)' }}>
+            <div className="ns-user-avatar" style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'white', color: 'var(--primary)' }}>
+              <span style={{ fontWeight: 900 }}>{currentUser.name.charAt(0).toUpperCase()}</span>
             </div>
             <div className="ns-user-info">
-              <div style={{ fontSize: '0.875rem', fontWeight: 700 }}>{currentUser.name.toUpperCase()}</div>
-              <div style={{ fontSize: '0.65rem', opacity: 0.8, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                <RefreshCw size={8} /> {currentUser.role.toUpperCase()}
+              <div style={{ fontSize: '0.9rem', fontWeight: 800 }}>{currentUser.name.toUpperCase()}</div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 600, opacity: 0.7, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                <RefreshCw size={10} /> {currentUser.role.toUpperCase()}
               </div>
             </div>
           </div>
-          <div className="ns-user-id-box">
+          <div className="ns-user-id-box" style={{ borderRadius: '10px', background: 'rgba(0,0,0,0.2)', padding: '0.5rem 0.75rem', marginTop: '0.75rem', fontSize: '0.65rem' }}>
              <span style={{ opacity: 0.5 }}>ID: </span> {currentUser.id.substring(0, 16)}...
-             <Copy size={12} style={{ float: 'right', marginTop: '2px', cursor: 'pointer', opacity: 0.7 }} />
+             <span title="Salin ID" style={{ float: 'right', cursor: 'pointer' }}><Copy size={12} style={{ opacity: 0.7 }} /></span>
           </div>
 
-          <button onClick={logout} className="ns-logout-btn">
-            <LogOut size={16} /> Keluar Sistem
+          <button onClick={logout} className="ns-logout-btn" style={{ borderRadius: '14px', marginTop: '1rem', fontWeight: 700 }}>
+            <LogOut size={18} /> Keluar Sistem
           </button>
         </div>
       )}

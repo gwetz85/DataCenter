@@ -135,7 +135,7 @@ export default function Dashboard() {
       {/* TOP 5 CARDS */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
         
-        <div style={{ background: 'white', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+        <div className="glass-card" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#64748b', letterSpacing: '0.5px' }}>TOTAL REGISTER</span>
             <div style={{ background: '#eff6ff', color: '#3b82f6', padding: '0.5rem', borderRadius: '8px' }}>
@@ -148,7 +148,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div style={{ background: 'white', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+        <div className="glass-card" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#64748b', letterSpacing: '0.5px' }}>TERVERIFIKASI</span>
             <div style={{ background: '#f0fdf4', color: '#10b981', padding: '0.5rem', borderRadius: '8px' }}>
@@ -161,7 +161,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div style={{ background: 'white', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+        <div className="glass-card" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#64748b', letterSpacing: '0.5px' }}>TERVALIDASI</span>
             <div style={{ background: '#e0e7ff', color: '#4f46e5', padding: '0.5rem', borderRadius: '8px' }}>
@@ -174,7 +174,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div style={{ background: 'white', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+        <div className="glass-card" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#64748b', letterSpacing: '0.5px' }}>MONITORING AKTIF</span>
             <div style={{ background: '#fffbeb', color: '#d97706', padding: '0.5rem', borderRadius: '8px' }}>
@@ -187,7 +187,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div style={{ background: 'white', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+        <div className="glass-card" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#64748b', letterSpacing: '0.5px' }}>DATA DITOLAK</span>
             <div style={{ background: '#fef2f2', color: '#ef4444', padding: '0.5rem', borderRadius: '8px' }}>
@@ -205,7 +205,7 @@ export default function Dashboard() {
       <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start' }}>
         
         {/* MIDDLE SECTION: Monitoring Pekerjaan */}
-        <div style={{ flex: 2, background: 'white', borderRadius: '24px', padding: '2rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+        <div className="glass-card" style={{ flex: 2, padding: '2rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
             <Activity size={20} color="var(--primary)" />
             <h3 style={{ margin: 0, fontSize: '1.125rem', color: '#0f172a' }}>Monitoring Pekerjaan</h3>
@@ -259,7 +259,7 @@ export default function Dashboard() {
         {/* RIGHT COLUMN: Progres Verifikasi */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           
-          <div style={{ background: 'white', borderRadius: '24px', padding: '2rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+          <div className="glass-card" style={{ padding: '2rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
               <BarChart3 size={20} color="var(--primary)" />
               <h3 style={{ margin: 0, fontSize: '1.125rem', color: '#0f172a' }}>Progres Verifikasi</h3>
