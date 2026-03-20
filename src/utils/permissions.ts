@@ -29,7 +29,8 @@ export const rolePermissions: Record<Role, MenuPath[]> = {
   ],
   Petugas: [
     '/dashboard', '/registrasi', '/data-pengajuan', '/finish', '/pengaturan'
-  ]
+  ],
+  Guest: []
 };
 
 // Check if a role can access a specific path

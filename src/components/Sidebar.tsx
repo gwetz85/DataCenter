@@ -34,10 +34,12 @@ const navItems = [
 ];
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
-  const { user } = useAuth();
+  const { currentUser } = useAuth();
   
   // Filter navigation items based on the user's role
-  const visibleNavItems = navItems.filter(item => canAccessMenu(user.role, item.path));
+  const visibleNavItems = currentUser 
+    ? navItems.filter(item => canAccessMenu(currentUser.role, item.path))
+    : [];
 
   return (
     <aside className={`sidebar glass-panel ${isOpen ? 'open' : ''}`} style={{ borderRadius: '0', borderLeft: 'none', borderTop: 'none', borderBottom: 'none' }}>

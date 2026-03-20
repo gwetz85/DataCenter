@@ -9,15 +9,25 @@ import MonitoringPekerjaan from './pages/MonitoringPekerjaan';
 import Finish from './pages/Finish';
 import ManajemenPengguna from './pages/ManajemenPengguna';
 import Pengaturan from './pages/Pengaturan';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import PublicRoute from './components/PublicRoute';
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+          {/* Public Routes */}
+          <Route element={<PublicRoute />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/daftar" element={<Register />} />
+          </Route>
+
+          {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Layout />}>
               <Route index element={<Navigate to="/dashboard" replace />} />

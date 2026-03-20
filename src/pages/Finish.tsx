@@ -3,8 +3,10 @@ import { canEdit } from '../utils/permissions';
 import { Edit2, Trash2 } from 'lucide-react';
 
 export default function Finish() {
-  const { user } = useAuth();
-  const hasEditAccess = canEdit(user.role, '/finish');
+  const { currentUser } = useAuth();
+  
+  // Guard against null though this route is protected
+  const hasEditAccess = currentUser ? canEdit(currentUser.role, '/finish') : false;
 
   return (
     <div>

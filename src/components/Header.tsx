@@ -1,13 +1,14 @@
-import { Bell, Search, Menu, ChevronDown } from 'lucide-react';
+import { Bell, Search, Menu, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import type { Role } from '../types/auth';
 
 interface HeaderProps {
   onToggleSidebar: () => void;
 }
 
 export default function Header({ onToggleSidebar }: HeaderProps) {
-  const { user, switchRole } = useAuth();
+  const { currentUser, logout } = useAuth();
+
+  if (!currentUser) return null;
 
   return (
     <header className="header glass-panel" style={{ borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderRadius: '0', borderBottom: '1px solid var(--border)' }}>
@@ -28,32 +29,27 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
         </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.25rem' }}>
-            <p style={{ margin: 0, fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-main)' }}>{user.name}</p>
-            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-              <select 
-                value={user.role} 
-                onChange={(e) => switchRole(e.target.value as Role)}
-                style={{ 
-                  background: 'rgba(0,0,0,0.2)', 
-                  color: 'var(--text-muted)', 
-                  border: '1px solid rgba(255,255,255,0.1)', 
-                  borderRadius: '4px',
-                  fontSize: '0.75rem',
-                  padding: '2px 20px 2px 8px',
-                  appearance: 'none',
-                  outline: 'none',
-                  cursor: 'pointer'
-                }}
-              >
-                <option value="Admin">Admin</option>
-                <option value="Verifikator">Verifikator</option>
-                <option value="Monitoring">Monitoring</option>
-                <option value="Petugas">Petugas</option>
-              </select>
-              <ChevronDown size={12} style={{ position: 'absolute', right: '4px', pointerEvents: 'none', color: 'var(--text-muted)' }} />
-            </div>
+            <p style={{ margin: 0, fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-main)' }}>{currentUser.name}</p>
+            <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)' }}>{currentUser.role}</p>
           </div>
-          <div className="avatar">{user.name.charAt(0)}</div>
+          <div className="avatar" style={{ marginRight: '0.5rem' }}>{currentUser.name.charAt(0)}</div>
+          <button 
+            onClick={logout}
+            style={{ 
+              background: 'rgba(239, 68, 68, 0.1)', 
+              border: '1px solid rgba(239, 68, 68, 0.2)', 
+              color: '#ef4444', 
+              cursor: 'pointer', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              padding: '0.5rem',
+              borderRadius: '8px'
+            }}
+            title="Keluar"
+          >
+            <LogOut size={16} />
+          </button>
         </div>
       </div>
     </header>
