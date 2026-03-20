@@ -15,11 +15,14 @@ export default function Login() {
     setError('');
     
     if (!email || !password) {
-      setError('Mohon isi email dan password.');
+      setError('Mohon isi email atau username dan password.');
       return;
     }
 
-    const { success, message } = await login(email, password);
+    // Allow user to just type 'AGUS' instead of full email
+    const loginEmail = email.includes('@') ? email : `${email.toLowerCase()}@datacenter.com`;
+
+    const { success, message } = await login(loginEmail, password);
     if (success) {
       navigate('/dashboard');
     } else {
@@ -46,12 +49,12 @@ export default function Login() {
 
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <label style={{ fontSize: '0.875rem', color: 'var(--text-main)' }}>Email</label>
+            <label style={{ fontSize: '0.875rem', color: 'var(--text-main)' }}>Username / Email</label>
             <input 
-              type="email" 
+              type="text" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@datacenter.com"
+              placeholder="AGUS atau email@anda.com"
               style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'rgba(255,255,255,0.05)', color: 'white', outline: 'none' }}
             />
           </div>
