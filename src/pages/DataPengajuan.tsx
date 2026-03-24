@@ -2,14 +2,16 @@ import { useState, useEffect } from 'react';
 import { db } from '../config/firebase';
 import { ref, onValue, update } from 'firebase/database';
 import { useAuth } from '../context/AuthContext';
-import { Database, ChevronDown, ChevronUp, PlayCircle, Clock, CheckCircle } from 'lucide-react';
+import { Database, ChevronDown, ChevronUp, PlayCircle, Clock, CheckCircle, Edit } from 'lucide-react';
 import { canPerformAction } from '../utils/permissions';
+import EditPengajuanModal from '../components/EditPengajuanModal';
 
 export default function DataPengajuan() {
   const { currentUser } = useAuth();
   const [pengajuanList, setPengajuanList] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [editingData, setEditingData] = useState<any>(null);
 
   useEffect(() => {
     const pengajuanRef = ref(db, 'pengajuan');
@@ -214,6 +216,12 @@ export default function DataPengajuan() {
                       >
                         <CheckCircle size={20} /> Teruskan Ke Admin (Waiting)
                       </button>
+                      <button 
+                        onClick={() => setEditingData(item)}
+                        style={{ flex: 1, padding: '1rem', borderRadius: '12px', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.2s' }}
+                      >
+                        <Edit size={20} /> Edit Data
+                      </button>
                     </div>
                   )}
                 </div>
@@ -221,6 +229,14 @@ export default function DataPengajuan() {
             </div>
           ))}
         </div>
+      )}
+
+      {editingData && (
+        <EditPengajuanModal 
+          data={editingData} 
+          onClose={() => setEditingData(null)} 
+          onSuccess={() => { setEditingData(null); alert('Data berhasil diperbarui!'); }}
+        />
       )}
     </div>
   );
