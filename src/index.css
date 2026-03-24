@@ -635,6 +635,34 @@ button:active {
   }
 }
 
+/* Custom Content Responsive */
+.detail-container {
+  display: grid;
+  grid-template-columns: minmax(250px, 1fr) 2fr;
+  gap: 2rem;
+}
+
+.action-buttons-container {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+@media (max-width: 768px) {
+  .detail-container {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+  .detail-sub-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .action-buttons-container {
+    flex-direction: column;
+  }
+}
+
 @keyframes slideUp {
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
