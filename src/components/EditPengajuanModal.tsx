@@ -45,7 +45,7 @@ export default function EditPengajuanModal({ data, onClose, onSuccess }: EditPen
     borderRadius: '10px', 
     border: '1px solid rgba(255,255,255,0.1)', 
     background: 'rgba(0,0,0,0.2)', 
-    color: 'var(--text-main)', 
+    color: '#ffffff', 
     outline: 'none', 
     fontSize: '0.9rem', 
     width: '100%',
@@ -73,12 +73,12 @@ export default function EditPengajuanModal({ data, onClose, onSuccess }: EditPen
         
         <button 
           onClick={onClose}
-          style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'rgba(255,255,255,0.1)', border: 'none', color: 'var(--text-main)', borderRadius: '50%', padding: '0.5rem', cursor: 'pointer', display: 'flex' }}
+          style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'rgba(255,255,255,0.1)', border: 'none', color: '#ffffff', borderRadius: '50%', padding: '0.5rem', cursor: 'pointer', display: 'flex' }}
         >
           <X size={20} />
         </button>
 
-        <h2 style={{ margin: '0 0 1.5rem 0', fontSize: '1.5rem', fontWeight: 800 }}>Edit Data Pengajuan</h2>
+        <h2 style={{ margin: '0 0 1.5rem 0', fontSize: '1.5rem', fontWeight: 800, color: '#ffffff' }}>Edit Data Pengajuan</h2>
 
         <form onSubmit={handleSubmit}>
           
@@ -201,7 +201,7 @@ export default function EditPengajuanModal({ data, onClose, onSuccess }: EditPen
             <button 
               type="button" 
               onClick={onClose}
-              style={{ padding: '0.75rem 1.5rem', borderRadius: '12px', background: 'transparent', color: 'var(--text-main)', border: '1px solid var(--border)', fontWeight: 700, cursor: 'pointer' }}
+              style={{ padding: '0.75rem 1.5rem', borderRadius: '12px', background: 'transparent', color: '#ffffff', border: '1px solid rgba(255,255,255,0.2)', fontWeight: 700, cursor: 'pointer' }}
             >
               Batal
             </button>
