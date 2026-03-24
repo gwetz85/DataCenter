@@ -214,35 +214,42 @@ export default function Dashboard() {
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                <th style={{ padding: '1rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>Nama</th>
-                <th style={{ padding: '1rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>Pekerjaan</th>
-                <th style={{ padding: '1rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>Status</th>
+                <th style={{ padding: '1rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>Nama Pelaku Usaha</th>
+                <th style={{ padding: '1rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>Pengajuan</th>
+                <th style={{ padding: '1rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>Proses & Keterangan</th>
               </tr>
             </thead>
             <tbody>
               {counts.recenterJobs.length > 0 ? counts.recenterJobs.map((item, idx) => (
                 <tr key={item.id || idx} style={{ borderBottom: idx === counts.recenterJobs.length - 1 ? 'none' : '1px solid #f1f5f9' }}>
                   <td style={{ padding: '1rem 0.5rem' }}>
-                    <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#1e293b' }}>{item.authorName || 'Anonim'}</div>
+                    <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#1e293b' }}>{item.nama || item.authorName || 'Anonim'}</div>
                   </td>
                   <td style={{ padding: '1rem 0.5rem' }}>
-                    <div style={{ fontSize: '0.875rem', color: '#475569' }}>{item.namaPekerjaan}</div>
+                    <div style={{ fontSize: '0.875rem', color: '#475569' }}>{item.jenisLayanan || item.namaPekerjaan || '-'}</div>
                   </td>
                   <td style={{ padding: '1rem 0.5rem' }}>
-                    <span style={{ 
-                      fontSize: '0.75rem', 
-                      fontWeight: 700, 
-                      padding: '4px 10px', 
-                      borderRadius: '12px',
-                      background: item.status === 'Registrasi' ? '#eff6ff' : 
-                                 item.status === 'Ditolak' ? '#fef2f2' : 
-                                 item.status === 'Selesai' ? '#f0fdf4' : '#fffbeb',
-                      color: item.status === 'Registrasi' ? '#3b82f6' : 
-                             item.status === 'Ditolak' ? '#ef4444' : 
-                             item.status === 'Selesai' ? '#10b981' : '#d97706'
-                    }}>
-                      {item.status}
-                    </span>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.5rem' }}>
+                      <span style={{ 
+                        fontSize: '0.75rem', 
+                        fontWeight: 700, 
+                        padding: '4px 10px', 
+                        borderRadius: '12px',
+                        background: item.status === 'Registrasi' ? '#eff6ff' : 
+                                   item.status === 'Ditolak' ? '#fef2f2' : 
+                                   item.status === 'Selesai' ? '#f0fdf4' : '#fffbeb',
+                        color: item.status === 'Registrasi' ? '#3b82f6' : 
+                               item.status === 'Ditolak' ? '#ef4444' : 
+                               item.status === 'Selesai' ? '#10b981' : '#d97706'
+                      }}>
+                        {item.status}
+                      </span>
+                      {item.keterangan_proses && (
+                        <div style={{ fontSize: '0.75rem', color: '#64748b', fontStyle: 'italic', maxWidth: '250px' }}>
+                          {item.keterangan_proses}
+                        </div>
+                      )}
+                    </div>
                   </td>
                 </tr>
               )) : (
