@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { db } from '../config/firebase';
 import { ref, onValue } from 'firebase/database';
-import { CheckCircle, ChevronDown, ChevronUp, Clock, FileCheck } from 'lucide-react';
+import { CheckCircle, ChevronDown, ChevronUp, Clock, FileCheck, Search, Filter } from 'lucide-react';
 
 export default function Finish() {
   const [pengajuanList, setPengajuanList] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [serviceFilter, setServiceFilter] = useState('Semua Layanan');
 
   useEffect(() => {
     const pengajuanRef = ref(db, 'pengajuan');
@@ -27,17 +29,29 @@ export default function Finish() {
     return () => unsubscribe();
   }, []);
 
+  const filteredList = pengajuanList.filter(item => {
+    const matchesSearch = (item.nama || item.namaPekerjaan || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          (item.nik || '').includes(searchTerm);
+    const matchesService = serviceFilter === 'Semua Layanan' || item.jenisLayanan === serviceFilter;
+    return matchesSearch && matchesService;
+  });
+
+  const uniqueServices = Array.from(new Set(pengajuanList.map(item => item.jenisLayanan))).filter(Boolean);
+
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh', color: 'var(--text-muted)' }}>
-        Memuat data arsip...
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+          <div className="spinner" style={{ width: '40px', height: '40px', border: '4px solid rgba(255,255,255,0.1)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+          Memuat data arsip...
+        </div>
       </div>
     );
   }
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2.5rem' }}>
         <div>
           <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '2.5rem', fontWeight: 800, margin: '0 0 0.5rem 0' }}>
             <div style={{ background: 'var(--primary)', color: 'white', padding: '0.75rem', borderRadius: '16px', display: 'flex' }}>
@@ -49,19 +63,49 @@ export default function Finish() {
             Arsip seluruh pekerjaan dan pengajuan yang telah selesai divalidasi.
           </p>
         </div>
+        <div style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '0.5rem 1rem', borderRadius: '50px', fontWeight: 700, fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <CheckCircle size={16} /> {pengajuanList.length} TOTAL SELESAI
+        </div>
       </div>
 
-      {pengajuanList.length === 0 ? (
+      {/* SEARCH AND FILTER */}
+      <div className="glass-card" style={{ padding: '1.5rem', marginBottom: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+        <div style={{ flex: 1, minWidth: '300px', position: 'relative' }}>
+          <Search size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }} />
+          <input 
+            type="text" 
+            placeholder="Cari nama pemohon atau NIK..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{ width: '100%', padding: '0.75rem 1rem 0.75rem 3rem', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: 'var(--text-main)', outline: 'none' }}
+          />
+        </div>
+        <div style={{ position: 'relative' }}>
+          <Filter size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }} />
+          <select 
+            value={serviceFilter}
+            onChange={(e) => setServiceFilter(e.target.value)}
+            style={{ padding: '0.75rem 1rem 0.75rem 3rem', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: 'var(--text-main)', outline: 'none', cursor: 'pointer', appearance: 'none' }}
+          >
+            <option value="Semua Layanan">Semua Layanan</option>
+            {uniqueServices.map(service => (
+              <option key={service} value={service}>{service}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {filteredList.length === 0 ? (
         <div className="glass-card" style={{ padding: '4rem 2rem', textAlign: 'center' }}>
           <div style={{ width: '80px', height: '80px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto' }}>
-            <CheckCircle size={40} style={{ color: 'var(--text-muted)', opacity: 0.5 }} />
+            <CheckCircle size={40} style={{ color: 'var(--text-muted)', opacity: 0.3 }} />
           </div>
-          <h3 style={{ fontSize: '1.25rem', margin: '0 0 0.5rem 0', color: 'var(--text-main)' }}>Belum ada data yang selesai</h3>
-          <p style={{ color: 'var(--text-muted)', margin: 0 }}>Arsip pengajuan masih kosong.</p>
+          <h3 style={{ fontSize: '1.25rem', margin: '0 0 0.5rem 0', color: 'var(--text-main)' }}>Data tidak ditemukan</h3>
+          <p style={{ color: 'var(--text-muted)', margin: 0 }}>Coba sesuaikan pencarian atau filter Anda.</p>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {pengajuanList.map((item) => (
+          {filteredList.map((item) => (
             <div key={item.id} className="glass-card animate-enter" style={{ overflow: 'hidden' }}>
               
               {/* Header Card / collapsed view */}

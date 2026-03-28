@@ -120,15 +120,15 @@ export default function VerifikasiData() {
                       {item.namaPekerjaan || item.nama}
                     </h3>
                     <span style={{ 
-                      background: item.status === 'Selesai' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)', 
-                      color: item.status === 'Selesai' ? '#10b981' : '#f59e0b', 
+                      background: item.status === 'SELESAI' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)', 
+                      color: item.status === 'SELESAI' ? '#10b981' : '#f59e0b', 
                       padding: '0.25rem 0.75rem', 
                       borderRadius: '20px', 
                       fontSize: '0.75rem', 
                       fontWeight: 800, 
-                      border: item.status === 'Selesai' ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(245, 158, 11, 0.2)' 
+                      border: item.status === 'SELESAI' ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(245, 158, 11, 0.2)' 
                     }}>
-                      {item.status === 'Selesai' ? 'SELESAI' : 'PROSES'}
+                      {item.status === 'SELESAI' ? 'SELESAI' : 'PROSES'}
                     </span>
                   </div>
                   <div style={{ display: 'flex', gap: '1.5rem', color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 500 }}>

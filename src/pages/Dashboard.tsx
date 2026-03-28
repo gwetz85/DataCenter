@@ -34,7 +34,7 @@ export default function Dashboard() {
       Object.values(data).forEach((item: any) => {
         registerCount++;
         
-        if (item.status === 'Selesai') {
+        if (item.status === 'SELESAI') {
           selesaiCount++;
         } else if (item.status !== 'Ditolak') {
           prosesCount++;
@@ -177,10 +177,10 @@ export default function Dashboard() {
                       fontWeight: 700, 
                       padding: '4px 10px', 
                       borderRadius: '12px',
-                      background: item.status === 'Selesai' ? '#f0fdf4' : '#fffbeb',
-                      color: item.status === 'Selesai' ? '#10b981' : '#f59e0b'
+                      background: item.status === 'SELESAI' ? '#f0fdf4' : '#fffbeb',
+                      color: item.status === 'SELESAI' ? '#10b981' : '#f59e0b'
                     }}>
-                      {item.status === 'Selesai' ? 'SELESAI' : 'PROSES'}
+                      {item.status === 'SELESAI' ? 'SELESAI' : 'PROSES'}
                     </span>
                   </td>
                   <td style={{ padding: '1rem 0.5rem' }}>
