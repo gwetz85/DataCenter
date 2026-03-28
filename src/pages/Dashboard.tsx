@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { 
-  CheckSquare, Activity, XCircle, Database, 
-  BarChart3, ListChecks 
+  CheckSquare, Activity, Database, 
+  BarChart3
 } from 'lucide-react';
 import { ref, onValue } from 'firebase/database';
 import { db } from '../config/firebase';
@@ -9,12 +9,8 @@ import { db } from '../config/firebase';
 export default function Dashboard() {
   const [counts, setCounts] = useState({
     register: 0,
-    terverifikasi: 0,
-    tervalidasi: 0,
-    monitoring: 0,
-    ditolak: 0,
+    proses: 0,
     selesai: 0,
-    jenisLayanan: {} as Record<string, number>,
     recenterJobs: [] as any[]
   });
 
@@ -24,8 +20,7 @@ export default function Dashboard() {
       const data = snapshot.val();
       if (!data) {
         setCounts({ 
-          register: 0, terverifikasi: 0, tervalidasi: 0, 
-          monitoring: 0, ditolak: 0, selesai: 0, jenisLayanan: {},
+          register: 0, proses: 0, selesai: 0,
           recenterJobs: []
         });
         return;
@@ -33,59 +28,29 @@ export default function Dashboard() {
 
       const allJobs = Object.values(data);
       let registerCount = 0;
-      let terverifikasiCount = 0;
-      let tervalidasiCount = 0;
-      let monitoringCount = 0;
-      let ditolakCount = 0;
+      let prosesCount = 0;
       let selesaiCount = 0;
-      let jenisLayananMap: Record<string, number> = {};
 
       Object.values(data).forEach((item: any) => {
-        registerCount++; // Cumulatively count all
+        registerCount++;
         
-        // Exact state counts
-        if (item.status === 'Registrasi') {
-          // Strictly in registration phase
-        }
-        if (['Terverifikasi', 'Tervalidasi', 'Monitoring', 'Selesai'].includes(item.status)) {
-          terverifikasiCount++;
-        }
-        if (['Tervalidasi', 'Monitoring', 'Selesai'].includes(item.status)) {
-          tervalidasiCount++;
-        }
-        if (item.status === 'Monitoring') {
-          monitoringCount++;
-        }
         if (item.status === 'Selesai') {
           selesaiCount++;
+        } else if (item.status !== 'Ditolak') {
+          prosesCount++;
         }
-        if (item.status === 'Ditolak') {
-          ditolakCount++;
-        }
-
-        // Aggregate Layanan
-        const layanan = item.jenisLayanan || 'Lainnya';
-        if (!jenisLayananMap[layanan]) jenisLayananMap[layanan] = 0;
-        jenisLayananMap[layanan]++;
       });
 
       setCounts({
         register: registerCount,
-        terverifikasi: terverifikasiCount,
-        tervalidasi: tervalidasiCount,
-        monitoring: monitoringCount,
-        ditolak: ditolakCount,
+        proses: prosesCount,
         selesai: selesaiCount,
-        jenisLayanan: jenisLayananMap,
-        recenterJobs: allJobs.sort((a: any, b: any) => (b.createdAt || 0) - (a.createdAt || 0)).slice(0, 5)
+        recenterJobs: allJobs.sort((a: any, b: any) => (b.updatedAt || b.createdAt || 0) - (a.updatedAt || a.createdAt || 0)).slice(0, 10)
       });
     });
 
     return () => unsubscribe();
   }, []);
-
-  const totalPendingVerifikasi = counts.register - counts.terverifikasi - counts.ditolak;
-  const totalPendingValidasi = counts.terverifikasi - counts.tervalidasi;
 
   const calculateProgress = (value: number, total: number) => {
     if (total === 0) return 0;
@@ -132,71 +97,45 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* TOP 5 CARDS */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
+      {/* TOP 3 CARDS */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '2.5rem' }}>
         
-        <div className="glass-card" style={{ padding: '1.25rem' }}>
+        <div className="glass-card" style={{ padding: '1.5rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#64748b', letterSpacing: '0.5px' }}>TOTAL REGISTER</span>
+            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#64748b', letterSpacing: '0.5px' }}>TOTAL REGISTRASI</span>
             <div style={{ background: '#eff6ff', color: '#3b82f6', padding: '0.5rem', borderRadius: '8px' }}>
-               <Database size={16} />
+               <Database size={20} />
             </div>
           </div>
-          <h2 style={{ fontSize: '2rem', margin: '0 0 0.5rem 0', color: '#0f172a', fontWeight: 800 }}>{counts.register}</h2>
-          <div style={{ fontSize: '0.65rem', color: '#10b981', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-             📈 DATA TERKINI
+          <h2 style={{ fontSize: '2.5rem', margin: '0 0 0.5rem 0', color: '#0f172a', fontWeight: 800 }}>{counts.register}</h2>
+          <div style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+             📦 DATA MASUK
           </div>
         </div>
 
-        <div className="glass-card" style={{ padding: '1.25rem' }}>
+        <div className="glass-card" style={{ padding: '1.5rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#64748b', letterSpacing: '0.5px' }}>TERVERIFIKASI</span>
+            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#64748b', letterSpacing: '0.5px' }}>PROSES</span>
+            <div style={{ background: '#fffbeb', color: '#f59e0b', padding: '0.5rem', borderRadius: '8px' }}>
+               <Activity size={20} />
+            </div>
+          </div>
+          <h2 style={{ fontSize: '2.5rem', margin: '0 0 0.5rem 0', color: '#0f172a', fontWeight: 800 }}>{counts.proses}</h2>
+          <div style={{ fontSize: '0.75rem', color: '#f59e0b', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+             ⏳ SEDANG BERJALAN
+          </div>
+        </div>
+
+        <div className="glass-card" style={{ padding: '1.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#64748b', letterSpacing: '0.5px' }}>SELESAI</span>
             <div style={{ background: '#f0fdf4', color: '#10b981', padding: '0.5rem', borderRadius: '8px' }}>
-               <ListChecks size={16} />
+               <CheckSquare size={20} />
             </div>
           </div>
-          <h2 style={{ fontSize: '2rem', margin: '0 0 0.5rem 0', color: '#0f172a', fontWeight: 800 }}>{counts.terverifikasi}</h2>
-          <div style={{ fontSize: '0.65rem', color: '#10b981', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-             📈 DATA TERKINI
-          </div>
-        </div>
-
-        <div className="glass-card" style={{ padding: '1.25rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#64748b', letterSpacing: '0.5px' }}>TERVALIDASI</span>
-            <div style={{ background: '#e0e7ff', color: '#4f46e5', padding: '0.5rem', borderRadius: '8px' }}>
-               <CheckSquare size={16} />
-            </div>
-          </div>
-          <h2 style={{ fontSize: '2rem', margin: '0 0 0.5rem 0', color: '#0f172a', fontWeight: 800 }}>{counts.tervalidasi}</h2>
-          <div style={{ fontSize: '0.65rem', color: '#10b981', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-             📈 DATA TERKINI
-          </div>
-        </div>
-
-        <div className="glass-card" style={{ padding: '1.25rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#64748b', letterSpacing: '0.5px' }}>MONITORING AKTIF</span>
-            <div style={{ background: '#fffbeb', color: '#d97706', padding: '0.5rem', borderRadius: '8px' }}>
-               <Activity size={16} />
-            </div>
-          </div>
-          <h2 style={{ fontSize: '2rem', margin: '0 0 0.5rem 0', color: '#0f172a', fontWeight: 800 }}>{counts.monitoring}</h2>
-          <div style={{ fontSize: '0.65rem', color: '#10b981', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-             📈 DATA TERKINI
-          </div>
-        </div>
-
-        <div className="glass-card" style={{ padding: '1.25rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#64748b', letterSpacing: '0.5px' }}>DATA DITOLAK</span>
-            <div style={{ background: '#fef2f2', color: '#ef4444', padding: '0.5rem', borderRadius: '8px' }}>
-               <XCircle size={16} />
-            </div>
-          </div>
-          <h2 style={{ fontSize: '2rem', margin: '0 0 0.5rem 0', color: '#0f172a', fontWeight: 800 }}>{counts.ditolak}</h2>
-          <div style={{ fontSize: '0.65rem', color: '#10b981', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-             📈 DATA TERKINI
+          <h2 style={{ fontSize: '2.5rem', margin: '0 0 0.5rem 0', color: '#0f172a', fontWeight: 800 }}>{counts.selesai}</h2>
+          <div style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+             ✅ BERHASIL SELESAI
           </div>
         </div>
       </div>
@@ -214,14 +153,18 @@ export default function Dashboard() {
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                <th style={{ padding: '1rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>Nama Pelaku Usaha</th>
+                <th style={{ padding: '1rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>No</th>
+                <th style={{ padding: '1rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>Nama</th>
                 <th style={{ padding: '1rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>Pengajuan</th>
-                <th style={{ padding: '1rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>Proses & Keterangan</th>
+                <th style={{ padding: '1rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>Status</th>
+                <th style={{ padding: '1rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>Keterangan</th>
+                <th style={{ padding: '1rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>Tanggal Last Update</th>
               </tr>
             </thead>
             <tbody>
               {counts.recenterJobs.length > 0 ? counts.recenterJobs.map((item, idx) => (
                 <tr key={item.id || idx} style={{ borderBottom: idx === counts.recenterJobs.length - 1 ? 'none' : '1px solid #f1f5f9' }}>
+                  <td style={{ padding: '1rem 0.5rem', fontSize: '0.875rem', color: '#64748b' }}>{idx + 1}</td>
                   <td style={{ padding: '1rem 0.5rem' }}>
                     <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#1e293b' }}>{item.nama || item.authorName || 'Anonim'}</div>
                   </td>
@@ -229,32 +172,31 @@ export default function Dashboard() {
                     <div style={{ fontSize: '0.875rem', color: '#475569' }}>{item.jenisLayanan || item.namaPekerjaan || '-'}</div>
                   </td>
                   <td style={{ padding: '1rem 0.5rem' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.5rem' }}>
-                      <span style={{ 
-                        fontSize: '0.75rem', 
-                        fontWeight: 700, 
-                        padding: '4px 10px', 
-                        borderRadius: '12px',
-                        background: item.status === 'Registrasi' ? '#eff6ff' : 
-                                   item.status === 'Ditolak' ? '#fef2f2' : 
-                                   item.status === 'Selesai' ? '#f0fdf4' : '#fffbeb',
-                        color: item.status === 'Registrasi' ? '#3b82f6' : 
-                               item.status === 'Ditolak' ? '#ef4444' : 
-                               item.status === 'Selesai' ? '#10b981' : '#d97706'
-                      }}>
-                        {item.status}
-                      </span>
-                      {item.keterangan_proses && (
-                        <div style={{ fontSize: '0.75rem', color: '#64748b', fontStyle: 'italic', maxWidth: '250px' }}>
-                          {item.keterangan_proses}
-                        </div>
-                      )}
+                    <span style={{ 
+                      fontSize: '0.75rem', 
+                      fontWeight: 700, 
+                      padding: '4px 10px', 
+                      borderRadius: '12px',
+                      background: item.status === 'Selesai' ? '#f0fdf4' : '#fffbeb',
+                      color: item.status === 'Selesai' ? '#10b981' : '#f59e0b'
+                    }}>
+                      {item.status === 'Selesai' ? 'SELESAI' : 'PROSES'}
+                    </span>
+                  </td>
+                  <td style={{ padding: '1rem 0.5rem' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#64748b', maxWidth: '200px' }}>
+                      {item.keterangan_proses || item.alasanPenolakan || '-'}
+                    </div>
+                  </td>
+                  <td style={{ padding: '1rem 0.5rem' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                      {new Date(item.updatedAt || item.createdAt).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}
                     </div>
                   </td>
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan={3} style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8' }}>
+                  <td colSpan={6} style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8' }}>
                     Belum ada data pekerjaan.
                   </td>
                 </tr>
@@ -275,41 +217,21 @@ export default function Dashboard() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.8rem', fontWeight: 600, color: '#475569' }}>
-                  <span>Pending Verifikasi</span>
-                  <span style={{ background: '#eff6ff', color: '#3b82f6', padding: '2px 8px', borderRadius: '12px' }}>{Math.max(0, totalPendingVerifikasi)}</span>
+                  <span>Proses (Active)</span>
+                  <span style={{ background: '#fffbeb', color: '#f59e0b', padding: '2px 8px', borderRadius: '12px' }}>{counts.proses}</span>
                 </div>
                 <div style={{ width: '100%', height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
-                  <div style={{ width: `${calculateProgress(totalPendingVerifikasi, counts.register)}%`, height: '100%', background: '#3b82f6', borderRadius: '4px' }}></div>
+                  <div style={{ width: `${calculateProgress(counts.proses, counts.register)}%`, height: '100%', background: '#f59e0b', borderRadius: '4px' }}></div>
                 </div>
               </div>
 
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.8rem', fontWeight: 600, color: '#475569' }}>
-                  <span>Pending Validasi</span>
-                  <span style={{ background: '#fffbeb', color: '#d97706', padding: '2px 8px', borderRadius: '12px' }}>{Math.max(0, totalPendingValidasi)}</span>
-                </div>
-                <div style={{ width: '100%', height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
-                  <div style={{ width: `${calculateProgress(totalPendingValidasi, counts.register)}%`, height: '100%', background: '#f59e0b', borderRadius: '4px' }}></div>
-                </div>
-              </div>
-
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.8rem', fontWeight: 600, color: '#475569' }}>
-                  <span>Selesai (Finish)</span>
+                  <span>Selesai (Success)</span>
                   <span style={{ background: '#f0fdf4', color: '#10b981', padding: '2px 8px', borderRadius: '12px' }}>{counts.selesai}</span>
                 </div>
                 <div style={{ width: '100%', height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
                   <div style={{ width: `${calculateProgress(counts.selesai, counts.register)}%`, height: '100%', background: '#10b981', borderRadius: '4px' }}></div>
-                </div>
-              </div>
-
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.8rem', fontWeight: 600, color: '#475569' }}>
-                  <span>Ditolak / Batal</span>
-                  <span style={{ background: '#fef2f2', color: '#ef4444', padding: '2px 8px', borderRadius: '12px' }}>{counts.ditolak}</span>
-                </div>
-                <div style={{ width: '100%', height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
-                  <div style={{ width: `${calculateProgress(counts.ditolak, counts.register)}%`, height: '100%', background: '#ef4444', borderRadius: '4px' }}></div>
                 </div>
               </div>
             </div>

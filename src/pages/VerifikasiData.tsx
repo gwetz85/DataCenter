@@ -18,8 +18,8 @@ export default function VerifikasiData() {
       if (data) {
         const list = Object.keys(data)
           .map(key => ({ id: key, ...data[key] }))
-          .filter(item => item.status === 'Registrasi') // Only show "Registrasi"
-          .sort((a, b) => b.createdAt - a.createdAt); // Newest first
+          .filter(item => item.status !== 'Ditolak' && item.status !== 'Registrasi') // Show processes (Terverifikasi, Tervalidasi, Monitoring) and Selesai
+          .sort((a, b) => (b.updatedAt || b.createdAt) - (a.updatedAt || a.createdAt)); // Newest first
         setPengajuanList(list);
       } else {
         setPengajuanList([]);
@@ -117,10 +117,18 @@ export default function VerifikasiData() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-main)' }}>
-                      {item.namaPekerjaan || item.nama} {/* Fallback depending on old vs new form format */}
+                      {item.namaPekerjaan || item.nama}
                     </h3>
-                    <span style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', padding: '0.25rem 0.75rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800, border: '1px solid rgba(245, 158, 11, 0.2)' }}>
-                      REGISTRASI BARU
+                    <span style={{ 
+                      background: item.status === 'Selesai' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)', 
+                      color: item.status === 'Selesai' ? '#10b981' : '#f59e0b', 
+                      padding: '0.25rem 0.75rem', 
+                      borderRadius: '20px', 
+                      fontSize: '0.75rem', 
+                      fontWeight: 800, 
+                      border: item.status === 'Selesai' ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(245, 158, 11, 0.2)' 
+                    }}>
+                      {item.status === 'Selesai' ? 'SELESAI' : 'PROSES'}
                     </span>
                   </div>
                   <div style={{ display: 'flex', gap: '1.5rem', color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 500 }}>
