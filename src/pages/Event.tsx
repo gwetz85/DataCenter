@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../config/firebase';
 import { ref, push, set, onValue } from 'firebase/database';
-import { Calendar, Plus, Clock, MapPin, X, AlertCircle, CheckCircle2, List } from 'lucide-react';
+import { Calendar, Plus, Clock, MapPin, X, AlertCircle, CheckCircle2, List, Phone } from 'lucide-react';
 import { canPerformAction } from '../utils/permissions';
 
 interface Participant {
@@ -238,9 +238,9 @@ export default function Event() {
               <X size={20} />
             </button>
             
-            {/* Top Info Section */}
-            <div style={{ padding: '3rem', background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.2), rgba(16, 185, 129, 0.2))', borderBottom: '1px solid var(--border)' }}>
-              <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '1.5rem' }}>{activeEvent.agenda}</h2>
+            {/* Top Info Section - Updated for better contrast */}
+            <div style={{ padding: '3rem', background: 'linear-gradient(135deg, #1e293b, #0f172a)', borderBottom: '1px solid var(--border)' }}>
+              <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '1.5rem', color: 'white' }}>{activeEvent.agenda}</h2>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
                 <div style={detailItemStyle}>
                   <Calendar size={18} color="var(--primary)" />
@@ -290,12 +290,16 @@ export default function Event() {
                   )}
                 </div>
                 
-                <div style={{ display: 'grid', gridTemplateColumns: isAddingParticipant ? '1fr' : 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: isAddingParticipant ? '1fr' : 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.25rem' }}>
                   {activeEvent.participants ? Object.values(activeEvent.participants).map(p => (
-                    <div key={p.id} style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '16px', border: '1px solid var(--border)' }}>
-                      <div style={{ fontWeight: 800, fontSize: '0.9rem', marginBottom: '0.25rem' }}>{p.nama.toUpperCase()}</div>
-                      <div style={{ fontSize: '0.75rem', opacity: 0.7, color: 'var(--text-muted)' }}>📞 {p.nomorPonsel}</div>
-                      <div style={{ fontSize: '0.75rem', opacity: 0.7, color: 'var(--text-muted)', marginTop: '0.2rem' }}>📍 {p.alamat}</div>
+                    <div key={p.id} style={{ background: 'var(--surface)', padding: '1.25rem', borderRadius: '20px', border: '1px solid var(--border)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
+                      <div style={{ fontWeight: 800, fontSize: '1rem', marginBottom: '0.4rem', color: 'var(--text-main)' }}>{p.nama.toUpperCase()}</div>
+                      <div style={{ fontSize: '0.85rem', color: 'var(--primary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <Phone size={14} /> {p.nomorPonsel}
+                      </div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.4rem', display: 'flex', alignItems: 'flex-start', gap: '0.5rem', lineHeight: '1.4' }}>
+                        <MapPin size={14} style={{ marginTop: '2px', flexShrink: 0 }} /> {p.alamat}
+                      </div>
                     </div>
                   )) : (
                     <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '3rem', opacity: 0.4, fontSize: '0.85rem', background: 'rgba(255,255,255,0.02)', borderRadius: '20px', border: '1px dashed var(--border)' }}>
@@ -416,43 +420,48 @@ const detailItemStyle = {
   display: 'flex',
   alignItems: 'center',
   gap: '1rem',
-  background: 'rgba(255,255,255,0.05)',
-  padding: '1rem 1.25rem',
-  borderRadius: '20px',
-  border: '1px solid var(--border)'
+  background: 'rgba(255,255,255,0.08)',
+  padding: '1.25rem',
+  borderRadius: '24px',
+  border: '1px solid rgba(255,255,255,0.15)',
+  backdropFilter: 'blur(4px)'
 };
 
 const detailLabelStyle = {
-  fontSize: '0.65rem',
+  fontSize: '0.7rem',
   fontWeight: 800,
-  color: 'var(--text-muted)',
-  letterSpacing: '0.5px'
+  color: 'rgba(255,255,255,0.5)',
+  letterSpacing: '0.05em',
+  marginBottom: '2px'
 };
 
 const detailValueStyle = {
-  fontSize: '0.95rem',
-  fontWeight: 700,
-  color: 'var(--text-main)'
-};
-
-const cdBoxStyle: React.CSSProperties = {
-  background: 'rgba(255,255,255,0.1)',
-  border: '1px solid rgba(255,255,255,0.2)',
-  borderRadius: '16px',
-  padding: '0.75rem 1.25rem',
-  textAlign: 'center',
-  minWidth: '70px'
-};
-
-const cdValueStyle = {
-  fontSize: '1.5rem',
-  fontWeight: 900,
+  fontSize: '1rem',
+  fontWeight: 800,
   color: 'white'
 };
 
+const cdBoxStyle: React.CSSProperties = {
+  background: 'rgba(0,0,0,0.3)',
+  border: '1px solid rgba(255,255,255,0.2)',
+  borderRadius: '20px',
+  padding: '1rem 1.5rem',
+  textAlign: 'center',
+  minWidth: '85px',
+  backdropFilter: 'blur(8px)'
+};
+
+const cdValueStyle = {
+  fontSize: '1.75rem',
+  fontWeight: 900,
+  color: 'white',
+  lineHeight: 1
+};
+
 const cdLabelStyle = {
-  fontSize: '0.55rem',
+  fontSize: '0.65rem',
   fontWeight: 800,
-  opacity: 0.6,
-  marginTop: '0.2rem'
+  color: 'rgba(255,255,255,0.4)',
+  marginTop: '0.4rem',
+  letterSpacing: '0.1em'
 };
