@@ -79,11 +79,14 @@ export default function Event() {
     }
     setIsSubmitting(true);
     setStatus(null);
+    console.log("Memulai proses simpan event...", { isEditing, editingId });
+
     try {
       let thumbnailUrl = isEditing ? selectedEvent?.thumbnailUrl || '' : '';
       
       // Upload new image if file is selected
       if (imageFile) {
+        console.log("Mencoba upload file:", imageFile.name);
         const storagePath = `event_thumbnails/${Date.now()}_${imageFile.name}`;
         const fileRef = sRef(storage, storagePath);
         const uploadTask = uploadBytesResumable(fileRef, imageFile);
@@ -93,39 +96,50 @@ export default function Event() {
             (snapshot) => {
               const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
               setUploadProgress(progress);
+              console.log(`Upload Progress: ${progress}%`);
             },
-            (error) => reject(error),
+            (error) => {
+              console.error("Firebase Storage Error:", error);
+              reject(error);
+            },
             async () => {
-              const url = await getDownloadURL(uploadTask.snapshot.ref);
-              resolve(url);
+              try {
+                const url = await getDownloadURL(uploadTask.snapshot.ref);
+                console.log("File berhasil diupload, URL:", url);
+                resolve(url);
+              } catch (err) {
+                console.error("Gagal mendapatkan download URL:", err);
+                reject(err);
+              }
             }
           );
         });
 
         // Delete old thumbnail if updating and new one uploaded
-        if (isEditing && selectedEvent?.thumbnailUrl) {
+        if (isEditing && selectedEvent?.thumbnailUrl && selectedEvent.thumbnailUrl.includes('firebasestorage')) {
            try {
+              // Extract path or use full URL if ref supports it
               const oldImgRef = sRef(storage, selectedEvent.thumbnailUrl);
               await deleteObject(oldImgRef);
-           } catch(e) { console.warn("Old thumbnail delete failed", e); }
+              console.log("Thumbnail lama dihapus.");
+           } catch(e) { console.warn("Old thumbnail delete failed (ignored):", e); }
         }
       }
 
+      const eventDataToSave: any = {
+        agenda, tanggal, jam, lokasi, thumbnailUrl
+      };
+
       if (isEditing && editingId) {
-        const updateData: Partial<EventData> = {
-          agenda, tanggal, jam, lokasi, thumbnailUrl
-        };
-        await update(ref(db, `events/${editingId}`), updateData);
+        console.log("Mengupdate event di RTDB...");
+        await update(ref(db, `events/${editingId}`), eventDataToSave);
         setStatus({ type: 'success', msg: 'Event berhasil diperbarui!' });
       } else {
+        console.log("Menambah event baru ke RTDB...");
         const newRef = push(ref(db, 'events'));
         const newEvent: EventData = {
           id: newRef.key as string,
-          agenda,
-          tanggal,
-          jam,
-          lokasi,
-          thumbnailUrl,
+          ...eventDataToSave,
           createdAt: new Date().getTime()
         };
         await set(newRef, newEvent);
@@ -134,11 +148,16 @@ export default function Event() {
 
       setAgenda(''); setTanggal(''); setJam(''); setLokasi(''); setImageFile(null); setUploadProgress(0);
       setTimeout(() => { setIsAddModalOpen(false); setStatus(null); setIsEditing(false); setEditingId(null); }, 1500);
-    } catch (err) {
-      console.error(err);
-      setStatus({ type: 'error', msg: 'Gagal memproses event.' });
+    } catch (err: any) {
+      console.error("Error dalam handleAddEvent:", err);
+      let errorMsg = 'Gagal memproses event.';
+      if (err.code === 'storage/unauthorized') errorMsg = 'Izin upload ditolak (Storage Rule).';
+      if (err.code === 'storage/quota-exceeded') errorMsg = 'Kuota penyimpanan penuh.';
+      setStatus({ type: 'error', msg: errorMsg });
+    } finally {
+      setIsSubmitting(false);
+      console.log("Proses selesai, submitting set false.");
     }
-    setIsSubmitting(false);
   };
 
   const handleAddParticipant = async (e: React.FormEvent) => {
