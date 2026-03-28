@@ -12,6 +12,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import DataDitolak from './pages/DataDitolak';
 import ChatMonitoring from './pages/ChatMonitoring';
+import Event from './pages/Event';
 
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -42,6 +43,7 @@ function App() {
               <Route path="finish" element={<Finish />} />
               <Route path="data-ditolak" element={<DataDitolak />} />
               <Route path="chat-monitoring" element={<ChatMonitoring />} />
+              <Route path="event" element={<Event />} />
               <Route path="manajemen-pengguna" element={<ManajemenPengguna />} />
               <Route path="pengaturan" element={<Pengaturan />} />
             </Route>

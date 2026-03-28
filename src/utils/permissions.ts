@@ -10,6 +10,7 @@ type MenuPath =
   | '/data-ditolak'
   | '/manajemen-pengguna' 
   | '/chat-monitoring'
+  | '/event'
   | '/pengaturan';
 
 // Define which menus are accessible by each role
@@ -17,16 +18,16 @@ export const rolePermissions: Record<Role, MenuPath[]> = {
   Admin: [
     '/dashboard', '/registrasi', '/verifikasi-data', '/data-pengajuan', 
     '/validasi-data', '/finish', '/data-ditolak',
-    '/manajemen-pengguna', '/chat-monitoring', '/pengaturan'
+    '/manajemen-pengguna', '/chat-monitoring', '/event', '/pengaturan'
   ],
   Verifikator: [
-    '/dashboard', '/verifikasi-data', '/validasi-data', '/finish', '/pengaturan'
+    '/dashboard', '/verifikasi-data', '/validasi-data', '/finish', '/event', '/pengaturan'
   ],
   Monitoring: [
-    '/dashboard', '/verifikasi-data', '/data-pengajuan', '/validasi-data', '/finish', '/pengaturan'
+    '/dashboard', '/verifikasi-data', '/data-pengajuan', '/validasi-data', '/finish', '/event', '/pengaturan'
   ],
   Petugas: [
-    '/dashboard', '/registrasi', '/data-pengajuan', '/finish', '/pengaturan'
+    '/dashboard', '/registrasi', '/data-pengajuan', '/finish', '/event', '/pengaturan'
   ],
   Guest: []
 };
@@ -51,6 +52,7 @@ export function canPerformAction(role: Role, path: MenuPath | string, action: 'v
   if (role === 'Petugas') {
     if (path === '/registrasi') return action === 'add' || action === 'edit';
     if (path === '/data-pengajuan') return action === 'edit';
+    if (path === '/event') return action === 'add' || action === 'edit';
     return false; // Default for Petugas on other menus (like Finish)
   }
 
