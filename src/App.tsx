@@ -36,6 +36,7 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<Dashboard />} />
+              <Route path="event" element={<Event />} />
               <Route path="registrasi" element={<Registrasi />} />
               <Route path="verifikasi-data" element={<VerifikasiData />} />
               <Route path="data-pengajuan" element={<DataPengajuan />} />
@@ -43,7 +44,6 @@ function App() {
               <Route path="finish" element={<Finish />} />
               <Route path="data-ditolak" element={<DataDitolak />} />
               <Route path="chat-monitoring" element={<ChatMonitoring />} />
-              <Route path="event" element={<Event />} />
               <Route path="manajemen-pengguna" element={<ManajemenPengguna />} />
               <Route path="pengaturan" element={<Pengaturan />} />
             </Route>

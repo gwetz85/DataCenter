@@ -15,6 +15,7 @@ interface SidebarProps {
 
 const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { path: '/event', label: 'Event', icon: Calendar },
   { path: '/registrasi', label: 'Registrasi', icon: UserPlus },
   { path: '/verifikasi-data', label: 'Verifikasi Data', icon: FileCheck },
   { path: '/data-pengajuan', label: 'Data Pengajuan', icon: Database },
@@ -22,7 +23,6 @@ const navItems = [
   { path: '/finish', label: 'Finish', icon: CheckCircle },
   { path: '/manajemen-pengguna', label: 'Manajemen Pengguna', icon: Users },
   { path: '/chat-monitoring', label: 'Monitoring Chat', icon: MessageSquare },
-  { path: '/event', label: 'Event', icon: Calendar },
   { path: '/pengaturan', label: 'Pengaturan', icon: Settings },
 ];
 
