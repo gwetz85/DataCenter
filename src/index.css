@@ -781,3 +781,52 @@ button:active {
 .chat-bubble-active {
   animation: bounce-subtle 2s infinite ease-in-out;
 }
+
+.responsive-padding-large {
+  padding: 3rem;
+}
+
+.event-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255,255,255,0.08);
+  padding: 1.25rem;
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,0.15);
+  backdrop-filter: blur(4px);
+}
+
+@media (max-width: 768px) {
+  .responsive-padding-large {
+    padding: 1.5rem !important;
+  }
+  .event-detail-item {
+    padding: 1rem !important;
+    gap: 0.75rem !important;
+    border-radius: 20px !important;
+  }
+  .responsive-modal-participant-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+  .countdown-item {
+    padding: 0.5rem 0.75rem !important;
+    min-width: 65px !important;
+  }
+}
+
+.countdown-wrapper {
+  display: flex;
+  gap: 1rem;
+}
+
+.countdown-item {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  min-width: 85px;
+  backdrop-filter: blur(8px);
+}

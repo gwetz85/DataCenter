@@ -293,19 +293,19 @@ export default function Event() {
       {/* Detail Modal */}
       {isDetailModalOpen && activeEvent && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(20px)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div className="glass-panel animate-slide-up" style={{ width: '100%', maxWidth: '800px', height: '90vh', display: 'flex', flexDirection: 'column', borderRadius: '32px', overflow: 'hidden', position: 'relative' }}>
+          <div className="glass-panel animate-slide-up" style={{ width: '100%', maxWidth: '800px', height: '100%', maxHeight: '90vh', display: 'flex', flexDirection: 'column', borderRadius: '32px', overflow: 'hidden', position: 'relative' }}>
             <button onClick={() => setIsDetailModalOpen(false)} style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', padding: '0.5rem', borderRadius: '50%', cursor: 'pointer', zIndex: 10 }}><X size={20} /></button>
-            <div style={{ padding: '3rem', background: activeEvent.thumbnailUrl ? `linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)), url(${activeEvent.thumbnailUrl}) center/cover no-repeat` : 'linear-gradient(135deg, #1e293b, #0f172a)', borderBottom: '1px solid var(--border)', position: 'relative' }}>
-              {canAddEvent && <button onClick={() => { setAgenda(activeEvent.agenda); setTanggal(activeEvent.tanggal); setJam(activeEvent.jam); setLokasi(activeEvent.lokasi); setIsEditing(true); setEditingId(activeEvent.id); setIsAddModalOpen(true); }} style={{ position: 'absolute', bottom: '2rem', right: '3rem', background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)', color: 'white', padding: '0.5rem 1rem', borderRadius: '12px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Edit3 size={16} /> EDIT EVENT</button>}
-              <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '1.5rem', color: 'white' }}>{activeEvent.agenda}</h2>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
-                <div style={detailItemStyle}><Calendar size={18} color="var(--primary)" /><div><div style={detailLabelStyle}>HARI / TANGGAL</div><div style={detailValueStyle}>{getDayName(activeEvent.tanggal)}, {formatDate(activeEvent.tanggal)}</div></div></div>
-                <div style={detailItemStyle}><Clock size={18} color="var(--primary)" /><div><div style={detailLabelStyle}>WAKTU</div><div style={detailValueStyle}>{activeEvent.jam} WIB</div></div></div>
-                <div style={detailItemStyle}><MapPin size={18} color="var(--primary)" /><div><div style={detailLabelStyle}>LOKASI</div><div style={detailValueStyle}>{activeEvent.lokasi}</div></div></div>
+            <div className="responsive-padding-large" style={{ background: activeEvent.thumbnailUrl ? `linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)), url(${activeEvent.thumbnailUrl}) center/cover no-repeat` : 'linear-gradient(135deg, #1e293b, #0f172a)', borderBottom: '1px solid var(--border)', position: 'relative' }}>
+              {canAddEvent && <button onClick={() => { setAgenda(activeEvent.agenda); setTanggal(activeEvent.tanggal); setJam(activeEvent.jam); setLokasi(activeEvent.lokasi); setIsEditing(true); setEditingId(activeEvent.id); setIsAddModalOpen(true); }} style={{ position: 'absolute', bottom: '1.5rem', right: '1.5rem', background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)', color: 'white', padding: '0.5rem 1rem', borderRadius: '12px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Edit3 size={16} /> EDIT</button>}
+              <h2 className="mobile-text-responsive-h1" style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '1.5rem', color: 'white', lineHeight: 1.2 }}>{activeEvent.agenda}</h2>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
+                <div className="event-detail-item"><Calendar size={18} color="var(--primary)" /><div><div style={detailLabelStyle}>HARI / TANGGAL</div><div style={detailValueStyle}>{getDayName(activeEvent.tanggal)}, {formatDate(activeEvent.tanggal)}</div></div></div>
+                <div className="event-detail-item"><Clock size={18} color="var(--primary)" /><div><div style={detailLabelStyle}>WAKTU</div><div style={detailValueStyle}>{activeEvent.jam} WIB</div></div></div>
+                <div className="event-detail-item"><MapPin size={18} color="var(--primary)" /><div><div style={detailLabelStyle}>LOKASI</div><div style={detailValueStyle}>{activeEvent.lokasi}</div></div></div>
               </div>
-              <div style={{ marginTop: '2.5rem' }}><Countdown targetDate={`${activeEvent.tanggal}T${activeEvent.jam}`} /></div>
+              <div style={{ marginTop: '2rem' }}><Countdown targetDate={`${activeEvent.tanggal}T${activeEvent.jam}`} /></div>
             </div>
-            <div style={{ flex: 1, padding: '2rem', overflowY: 'auto', display: 'grid', gridTemplateColumns: isAddingParticipant ? '1.5fr 1fr' : '1fr', gap: '2rem' }}>
+            <div className="responsive-modal-participant-grid" style={{ flex: 1, padding: '1.5rem', overflowY: 'auto', display: 'grid', gridTemplateColumns: isAddingParticipant ? '1.5fr 1fr' : '1fr', gap: isAddingParticipant ? '2rem' : '0' }}>
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}><h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.1rem', fontWeight: 800, margin: 0 }}><List size={20} color="var(--primary)" /> DAFTAR PESERTA</h3>{!isAddingParticipant && canAddEvent && <button onClick={() => setIsAddingParticipant(true)} style={{ padding: '0.6rem 1rem', borderRadius: '12px', background: 'var(--primary)', color: 'white', border: 'none', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Plus size={14} /> TAMBAH PESERTA</button>}</div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1.25rem' }}>{activeEvent.participants ? Object.values(activeEvent.participants).map(p => (<div key={p.id} style={{ background: 'var(--surface)', padding: '1.25rem', borderRadius: '20px', border: '1px solid var(--border)', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}><div style={{ fontWeight: 800, fontSize: '1rem', marginBottom: '0.4rem', color: 'var(--text-main)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>{p.nama.toUpperCase()}{canAddEvent && <button onClick={() => handleDeleteParticipant(activeEvent.id, p.id)} style={{ background: 'none', border: 'none', color: '#ef4444', opacity: 0.4, cursor: 'pointer' }}><Trash2 size={14} /></button>}</div><div style={{ fontSize: '0.85rem', color: 'var(--primary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Phone size={14} /> {p.nomorPonsel}</div><div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.4rem', display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}><MapPin size={14} style={{ marginTop: '2px' }} /> {p.alamat}</div></div>)) : <div style={{ textAlign: 'center', padding: '3rem', opacity: 0.4, fontSize: '0.85rem' }}>Belum ada peserta terdaftar.</div>}</div>
@@ -351,12 +351,20 @@ function Countdown({ targetDate }: { targetDate: string }) {
     return () => clearInterval(timer);
   }, [targetDate]);
   if (!timeLeft) return <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem', background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.5)', borderRadius: '50px', fontWeight: 900, letterSpacing: '1px', fontSize: '0.75rem', border: '1px solid rgba(255,255,255,0.1)' }}><CheckCircle2 size={16} /> KEGIATAN INI TELAH SELESAI</div>;
-  return <div style={{ display: 'flex', gap: '1rem' }}>{['d', 'h', 'm', 's'].map((u, i) => <div key={i} style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '20px', padding: '1rem 1.5rem', textAlign: 'center', minWidth: '85px', backdropFilter: 'blur(8px)' }}><div style={{ fontSize: '1.75rem', fontWeight: 900, color: 'white', lineHeight: 1 }}>{timeLeft[u as keyof typeof timeLeft].toString().padStart(2, '0')}</div><div style={{ fontSize: '0.65rem', fontWeight: 800, color: 'rgba(255,255,255,0.4)', marginTop: '0.4rem' }}>{['HARI', 'JAM', 'MENIT', 'DETIK'][i]}</div></div>)}</div>;
+  return (
+    <div className="countdown-wrapper" style={{ flexWrap: 'wrap', justifyContent: 'center' }}>
+      {['d', 'h', 'm', 's'].map((u, i) => (
+        <div key={i} className="countdown-item">
+          <div style={{ fontSize: '1.5rem', fontWeight: 900, color: 'white', lineHeight: 1 }}>{timeLeft[u as keyof typeof timeLeft].toString().padStart(2, '0')}</div>
+          <div style={{ fontSize: '0.6rem', fontWeight: 800, color: 'rgba(255,255,255,0.4)', marginTop: '0.4rem' }}>{['HARI', 'JAM', 'MENIT', 'DETIK'][i]}</div>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 const inputStyle = { width: '100%', padding: '0.875rem 1.25rem', borderRadius: '14px', border: '1px solid var(--border)', background: 'rgba(255,255,255,0.05)', color: 'var(--text-main)', fontSize: '0.9rem', outline: 'none' };
 const labelStyle = { display: 'block', fontSize: '0.8rem', fontWeight: 800, marginBottom: '0.4rem', opacity: 0.7 };
 const labelStyleSmall = { display: 'block', fontSize: '0.7rem', fontWeight: 800, marginBottom: '0.3rem', opacity: 0.6 };
-const detailItemStyle = { display: 'flex', alignItems: 'center', gap: '1rem', background: 'rgba(255,255,255,0.08)', padding: '1.25rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.15)', backdropFilter: 'blur(4px)' };
 const detailLabelStyle = { fontSize: '0.7rem', fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.05em', marginBottom: '2px' };
 const detailValueStyle = { fontSize: '1rem', fontWeight: 800, color: 'white' };
