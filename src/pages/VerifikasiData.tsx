@@ -18,7 +18,7 @@ export default function VerifikasiData() {
       if (data) {
         const list = Object.keys(data)
           .map(key => ({ id: key, ...data[key] }))
-          .filter(item => item.status !== 'Ditolak' && item.status !== 'Registrasi' && item.status !== 'SELESAI') // Show processes only (Terverifikasi, Tervalidasi, Monitoring)
+          .filter(item => item.status === 'Registrasi') // Only show new registrations from the registration menu
           .sort((a, b) => (b.updatedAt || b.createdAt) - (a.updatedAt || a.createdAt)); // Newest first
         setPengajuanList(list);
       } else {
@@ -120,15 +120,15 @@ export default function VerifikasiData() {
                       {item.namaPekerjaan || item.nama}
                     </h3>
                     <span style={{ 
-                      background: item.status === 'SELESAI' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)', 
-                      color: item.status === 'SELESAI' ? '#10b981' : '#f59e0b', 
+                      background: 'rgba(59, 130, 246, 0.1)', 
+                      color: '#3b82f6', 
                       padding: '0.25rem 0.75rem', 
                       borderRadius: '20px', 
                       fontSize: '0.75rem', 
                       fontWeight: 800, 
-                      border: item.status === 'SELESAI' ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(245, 158, 11, 0.2)' 
+                      border: '1px solid rgba(59, 130, 246, 0.2)' 
                     }}>
-                      {item.status === 'SELESAI' ? 'SELESAI' : 'PROSES'}
+                      MENUNGGU VERIFIKASI
                     </span>
                   </div>
                   <div style={{ display: 'flex', gap: '1.5rem', color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 500 }}>
