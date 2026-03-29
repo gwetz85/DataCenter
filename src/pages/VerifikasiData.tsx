@@ -18,7 +18,7 @@ export default function VerifikasiData() {
       if (data) {
         const list = Object.keys(data)
           .map(key => ({ id: key, ...data[key] }))
-          .filter(item => item.status !== 'Ditolak' && item.status !== 'Registrasi') // Show processes (Terverifikasi, Tervalidasi, Monitoring) and Selesai
+          .filter(item => item.status !== 'Ditolak' && item.status !== 'Registrasi' && item.status !== 'SELESAI') // Show processes only (Terverifikasi, Tervalidasi, Monitoring)
           .sort((a, b) => (b.updatedAt || b.createdAt) - (a.updatedAt || a.createdAt)); // Newest first
         setPengajuanList(list);
       } else {

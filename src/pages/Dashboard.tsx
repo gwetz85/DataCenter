@@ -45,7 +45,7 @@ export default function Dashboard() {
         register: registerCount,
         proses: prosesCount,
         selesai: selesaiCount,
-        recenterJobs: allJobs.sort((a: any, b: any) => (b.updatedAt || b.createdAt || 0) - (a.updatedAt || a.createdAt || 0)).slice(0, 10)
+        recenterJobs: allJobs.filter((item: any) => item.status !== 'SELESAI' && item.status !== 'Ditolak').sort((a: any, b: any) => (b.updatedAt || b.createdAt || 0) - (a.updatedAt || a.createdAt || 0)).slice(0, 10)
       });
     });
 
