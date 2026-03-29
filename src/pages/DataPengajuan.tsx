@@ -74,9 +74,9 @@ export default function DataPengajuan() {
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
+      <div className="responsive-layout-split" style={{ marginBottom: '2.5rem' }}>
         <div>
-          <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '2.5rem', fontWeight: 800, margin: '0 0 0.5rem 0' }}>
+          <h1 className="mobile-text-responsive-h1" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '2.5rem', fontWeight: 800, margin: '0 0 0.5rem 0' }}>
             <div style={{ background: 'var(--primary)', color: 'white', padding: '0.75rem', borderRadius: '16px', display: 'flex' }}>
               <Database size={32} />
             </div>
@@ -103,11 +103,12 @@ export default function DataPengajuan() {
               
               {/* Header Card / collapsed view */}
               <div 
-                style={{ padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', background: expandedId === item.id ? 'rgba(255,255,255,0.02)' : 'transparent', transition: 'background 0.2s' }}
+                className="responsive-header"
+                style={{ padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', background: expandedId === item.id ? 'rgba(255,255,255,0.02)' : 'transparent', transition: 'background 0.2s', flexWrap: 'wrap', gap: '1rem' }}
                 onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}
               >
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                     <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-main)' }}>
                       {item.namaPekerjaan || item.nama}
                     </h3>
@@ -122,7 +123,7 @@ export default function DataPengajuan() {
                       </span>
                     )}
                   </div>
-                  <div style={{ display: 'flex', gap: '1.5rem', color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 500 }}>
+                  <div style={{ display: 'flex', gap: '1.5rem', color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 500, flexWrap: 'wrap' }}>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                       <Database size={14} /> {item.jenisLayanan}
                     </span>
@@ -141,7 +142,7 @@ export default function DataPengajuan() {
 
               {/* Detail View */}
               {expandedId === item.id && (
-                <div className="animate-enter" style={{ padding: '2rem', borderTop: '1px solid var(--border)', background: 'rgba(0,0,0,0.1)' }}>
+                <div className="animate-enter" style={{ padding: '1rem 1.5rem', borderTop: '1px solid var(--border)', background: 'rgba(0,0,0,0.1)' }}>
                   
                   {item.status === 'Proses' && item.keterangan_proses && (
                     <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '1rem 1.5rem', borderRadius: '12px', border: '1px solid rgba(59, 130, 246, 0.2)', marginBottom: '1.5rem' }}>
@@ -208,19 +209,19 @@ export default function DataPengajuan() {
                         onClick={() => handleUpdateProses(item.id, item.keterangan_proses)}
                         style={{ flex: 1, padding: '1rem', borderRadius: '12px', background: 'rgba(59, 130, 246, 0.15)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.3)', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.2s' }}
                       >
-                        <PlayCircle size={20} /> Ubah Status & Keterangan (Proses)
+                        <PlayCircle size={20} /> Update Status
                       </button>
                       <button 
                         onClick={() => handleUpdateWaiting(item.id)}
                         style={{ flex: 1, padding: '1rem', borderRadius: '12px', background: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.3)', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.2s' }}
                       >
-                        <CheckCircle size={20} /> Teruskan Ke Admin (Waiting)
+                        <CheckCircle size={20} /> Teruskan
                       </button>
                       <button 
                         onClick={() => setEditingData(item)}
                         style={{ flex: 1, padding: '1rem', borderRadius: '12px', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.2s' }}
                       >
-                        <Edit size={20} /> Edit Data
+                        <Edit size={20} /> Edit
                       </button>
                     </div>
                   )}

@@ -33,8 +33,8 @@ export default function ManajemenPengguna() {
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
-        <h1 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '2.25rem', fontWeight: 800 }}>
+      <div className="responsive-layout-split" style={{ marginBottom: '2.5rem' }}>
+        <h1 className="mobile-text-responsive-h1" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '2.25rem', fontWeight: 800 }}>
           <div style={{ background: 'var(--primary)', color: 'white', padding: '0.6rem', borderRadius: '14px', display: 'flex' }}>
             <ShieldCheck size={32} />
           </div>
@@ -43,8 +43,8 @@ export default function ManajemenPengguna() {
       </div>
       
       <div className="glass-card animate-enter" style={{ padding: '0', overflow: 'hidden' }}>
-        <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '700px' }}>
+        <div className="table-wrapper">
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
             <thead>
               <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid var(--border)' }}>
                 <th style={{ padding: '1.25rem 1.5rem', color: 'var(--text-muted)', fontWeight: 700, fontSize: '0.8rem', letterSpacing: '1px' }}>NAMA / EMAIL</th>
@@ -149,7 +149,6 @@ export default function ManajemenPengguna() {
                             <RotateCcw size={16} />
                           </button>
                         )}
-
                         <button 
                           onClick={() => handleDeleteUser(u.id, u.name)}
                           title="Hapus User"

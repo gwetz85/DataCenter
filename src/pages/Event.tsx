@@ -197,9 +197,9 @@ export default function Event() {
     <div style={{ maxWidth: '1200px', margin: '0 auto', animation: 'fadeInScale 0.4s ease-out' }}>
       
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
+      <div className="responsive-layout-split" style={{ marginBottom: '2.5rem' }}>
         <div>
-          <h1 style={{ 
+          <h1 className="mobile-text-responsive-h1" style={{ 
             fontSize: '3rem', fontWeight: 900, margin: 0,
             background: 'linear-gradient(90deg, #6366f1, #a855f7)',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'
@@ -278,7 +278,7 @@ export default function Event() {
             {status && <div style={{ padding: '1rem', borderRadius: '12px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', background: status.type === 'error' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)', color: status.type === 'error' ? '#ef4444' : '#10b981', fontWeight: 700, fontSize: '0.85rem' }}>{status.type === 'error' ? <AlertCircle size={18} /> : <CheckCircle2 size={18} />}{status.msg}</div>}
             <form onSubmit={handleAddEvent}>
               <div style={{ marginBottom: '1.25rem' }}><label style={labelStyle}>AGENDA</label><input type="text" value={agenda} onChange={e => setAgenda(e.target.value)} style={inputStyle} required /></div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
+              <div className="responsive-grid-3" style={{ gap: '1rem', marginBottom: '1.25rem' }}>
                 <div><label style={labelStyle}>TANGGAL</label><input type="date" value={tanggal} onChange={e => setTanggal(e.target.value)} style={inputStyle} required /></div>
                 <div><label style={labelStyle}>JAM</label><input type="time" value={jam} onChange={e => setJam(e.target.value)} style={inputStyle} required /></div>
               </div>

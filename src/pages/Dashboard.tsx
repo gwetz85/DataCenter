@@ -63,7 +63,7 @@ export default function Dashboard() {
       {/* HEADER SECTION */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem' }}>
         <div>
-          <h1 style={{ 
+          <h1 className="mobile-text-responsive-h1" style={{ 
             fontSize: '3rem', 
             fontWeight: 900, 
             margin: '0 0 0.5rem 0',
@@ -98,7 +98,7 @@ export default function Dashboard() {
       </div>
 
       {/* TOP 3 CARDS */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '2.5rem' }}>
+      <div className="responsive-grid-3" style={{ marginBottom: '2.5rem' }}>
         
         <div className="glass-card" style={{ padding: '1.5rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -141,7 +141,7 @@ export default function Dashboard() {
       </div>
 
       {/* LOWER SECTION */}
-      <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start' }}>
+      <div className="responsive-layout-split">
         
         {/* MIDDLE SECTION: Monitoring Pekerjaan */}
         <div className="glass-card" style={{ flex: 2, padding: '2rem' }}>
@@ -150,7 +150,8 @@ export default function Dashboard() {
             <h3 style={{ margin: 0, fontSize: '1.125rem', color: '#0f172a' }}>Monitoring Pekerjaan</h3>
           </div>
           
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+          <div className="table-wrapper">
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
                 <th style={{ padding: '1rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>No</th>
@@ -203,6 +204,7 @@ export default function Dashboard() {
               )}
             </tbody>
           </table>
+          </div>
         </div>
 
         {/* RIGHT COLUMN: Progres Verifikasi */}
