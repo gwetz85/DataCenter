@@ -427,6 +427,11 @@ p { color: var(--text-muted); line-height: 1.6; }
   }
 }
 
+.page-content.no-padding {
+  padding: 0 !important;
+  height: 100%;
+}
+
 /* Custom Scrollbar */
 .page-content::-webkit-scrollbar {
   width: 6px;
