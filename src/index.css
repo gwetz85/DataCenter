@@ -880,3 +880,7 @@ button:active {
 .border-white\/10 { border: 1px solid rgba(255, 255, 255, 0.1); }
 .text-white { color: white; }
 .font-bold { font-weight: 700; }
+.overflow-auto { overflow: auto; }
+.overflow-visible { overflow: visible; }
+.h-screen { height: 100vh; }
+.min-h-screen { min-height: 100vh; }
