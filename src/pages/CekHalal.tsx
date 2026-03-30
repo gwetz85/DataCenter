@@ -30,6 +30,7 @@ const CekHalal: React.FC = () => {
           className="w-full h-full border-none"
           title="BPJPH Data Rekapitulasi"
           style={{ minHeight: 'calc(100vh - 120px)', flex: 1 }}
+          scrolling="yes"
         />
       </div>
     </div>

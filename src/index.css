@@ -408,7 +408,7 @@ p { color: var(--text-muted); line-height: 1.6; }
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   box-shadow: var(--glass-shadow);
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
 }
@@ -432,6 +432,7 @@ p { color: var(--text-muted); line-height: 1.6; }
   height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: auto !important;
 }
 
 /* Custom Scrollbar */
