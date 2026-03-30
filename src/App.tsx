@@ -13,6 +13,7 @@ import Register from './pages/Register';
 import DataDitolak from './pages/DataDitolak';
 import ChatMonitoring from './pages/ChatMonitoring';
 import Event from './pages/Event';
+import CekHalal from './pages/CekHalal';
 
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -45,6 +46,7 @@ function App() {
               <Route path="data-ditolak" element={<DataDitolak />} />
               <Route path="chat-monitoring" element={<ChatMonitoring />} />
               <Route path="manajemen-pengguna" element={<ManajemenPengguna />} />
+              <Route path="cek-halal" element={<CekHalal />} />
               <Route path="pengaturan" element={<Pengaturan />} />
             </Route>
           </Route>

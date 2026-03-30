@@ -11,6 +11,7 @@ type MenuPath =
   | '/manajemen-pengguna' 
   | '/chat-monitoring'
   | '/event'
+  | '/cek-halal'
   | '/pengaturan';
 
 // Define which menus are accessible by each role
@@ -18,16 +19,16 @@ export const rolePermissions: Record<Role, MenuPath[]> = {
   Admin: [
     '/dashboard', '/registrasi', '/verifikasi-data', '/data-pengajuan', 
     '/validasi-data', '/finish', '/data-ditolak',
-    '/manajemen-pengguna', '/chat-monitoring', '/event', '/pengaturan'
+    '/manajemen-pengguna', '/chat-monitoring', '/event', '/cek-halal', '/pengaturan'
   ],
   Verifikator: [
-    '/dashboard', '/verifikasi-data', '/validasi-data', '/finish', '/event', '/pengaturan'
+    '/dashboard', '/verifikasi-data', '/validasi-data', '/finish', '/event', '/cek-halal', '/pengaturan'
   ],
   Monitoring: [
-    '/dashboard', '/verifikasi-data', '/data-pengajuan', '/validasi-data', '/finish', '/event', '/pengaturan'
+    '/dashboard', '/verifikasi-data', '/data-pengajuan', '/validasi-data', '/finish', '/event', '/cek-halal', '/pengaturan'
   ],
   Petugas: [
-    '/dashboard', '/registrasi', '/data-pengajuan', '/finish', '/event', '/pengaturan'
+    '/dashboard', '/registrasi', '/data-pengajuan', '/finish', '/event', '/cek-halal', '/pengaturan'
   ],
   Guest: []
 };

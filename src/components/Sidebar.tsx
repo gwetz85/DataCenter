@@ -5,7 +5,7 @@ import { canAccessMenu } from '../utils/permissions';
 import { useState, useEffect } from 'react';
 import {
   LayoutDashboard, UserPlus, FileCheck, CheckSquare,
-  CheckCircle, Users, Settings, Database, LogOut, Copy, RefreshCw, Clock, MessageSquare, Calendar
+  CheckCircle, Users, Settings, Database, LogOut, Copy, RefreshCw, Clock, MessageSquare, Calendar, ShieldCheck
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -17,6 +17,7 @@ const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/event', label: 'Event', icon: Calendar },
   { path: '/registrasi', label: 'Registrasi', icon: UserPlus },
+  { path: '/cek-halal', label: 'CEK HALAL', icon: ShieldCheck },
   { path: '/verifikasi-data', label: 'Verifikasi Data', icon: FileCheck },
   { path: '/data-pengajuan', label: 'Data Pengajuan', icon: Database },
   { path: '/validasi-data', label: 'Validasi Data', icon: CheckSquare },
