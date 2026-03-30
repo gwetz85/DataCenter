@@ -6,14 +6,21 @@ const CekHalal: React.FC = () => {
   const portalUrl = "https://bpjph.halal.go.id/data-rekapitulasi-sehati/";
 
   return (
-    <div className="w-full h-full flex flex-col overflow-auto relative">
-      {/* Floating Action Bar - Only visible on hover or with opacity */}
-      <div className="absolute top-3 right-3 z-50 transition-opacity opacity-40 hover:opacity-100">
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', position: 'relative' }}>
+      {/* Floating Action Bar */}
+      <div style={{ position: 'absolute', top: '1rem', right: '1rem', zIndex: 50, opacity: 0.6 }}>
         <a 
           href={portalUrl} 
           target="_blank" 
           rel="noopener noreferrer"
-          className="flex items-center gap-2 px-4 py-2 bg-slate-800/80 hover:bg-slate-900 text-white rounded-xl shadow-2xl backdrop-blur-md transition-all active:scale-95 font-bold text-xs border border-white/10"
+          style={{ 
+            display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', 
+            background: 'rgba(30, 41, 59, 0.8)', color: 'white', borderRadius: '12px', 
+            textDecoration: 'none', fontWeight: 700, fontSize: '0.75rem', 
+            border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)' 
+          }}
+          onMouseEnter={(e) => e.currentTarget.parentElement!.style.opacity = '1'}
+          onMouseLeave={(e) => e.currentTarget.parentElement!.style.opacity = '0.6'}
         >
           <ExternalLink size={14} />
           BUKA DI TAB BARU
@@ -21,15 +28,14 @@ const CekHalal: React.FC = () => {
       </div>
 
       {/* Full Screen Iframe Section */}
-      <div className="flex-1 bg-white dark:bg-slate-900 overflow-auto relative">
-        <div className="absolute inset-0 bg-slate-100 dark:bg-slate-800 animate-pulse -z-10 flex items-center justify-center">
-            <div className="text-slate-400 font-medium">Memuat data dari portal BPJPH...</div>
+      <div style={{ flex: 1, background: 'white', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: -1 }}>
+            <div style={{ color: '#94a3b8', fontWeight: 500 }}>Memuat data dari portal BPJPH...</div>
         </div>
         <iframe 
           src={portalUrl} 
-          className="w-full h-full border-none"
+          style={{ width: '100%', height: '100%', border: 'none' }}
           title="BPJPH Data Rekapitulasi"
-          style={{ minHeight: 'calc(100vh - 120px)', flex: 1 }}
           scrolling="yes"
         />
       </div>
