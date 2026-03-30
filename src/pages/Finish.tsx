@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { db } from '../config/firebase';
 import { ref, onValue } from 'firebase/database';
-import { CheckCircle, ChevronDown, ChevronUp, Clock, FileCheck, Search, Filter } from 'lucide-react';
+import { CheckCircle, ChevronDown, ChevronUp, Clock, FileCheck, Search, Filter, MapPin } from 'lucide-react';
 
 export default function Finish() {
   const [pengajuanList, setPengajuanList] = useState<any[]>([]);
@@ -176,11 +176,10 @@ export default function Finish() {
                     <div>
                       <h4 style={{ color: 'var(--primary)', fontSize: '0.9rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem' }}>Data Pemohon</h4>
                       <dl style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.75rem', margin: 0, fontSize: '0.9rem' }}>
-                        <div><dt style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>Nama Lengkap</dt><dd style={{ margin: 0, fontWeight: 500 }}>{item.nama || '-'}</dd></div>
-                        <div><dt style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>Jenis Kelamin</dt><dd style={{ margin: 0, fontWeight: 500 }}>{item.jenisKelamin || '-'}</dd></div>
                         <div><dt style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>NIK KTP</dt><dd style={{ margin: 0, fontWeight: 500 }}>{item.nik || '-'}</dd></div>
                         <div><dt style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>Nomor KK</dt><dd style={{ margin: 0, fontWeight: 500 }}>{item.nomorKk || '-'}</dd></div>
-                        <div><dt style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>Tempat / Tgl Lahir</dt><dd style={{ margin: 0, fontWeight: 500 }}>{item.tempatLahir || '-'}{item.tanggalLahir ? ` / ${item.tanggalLahir}` : ''}</dd></div>
+                        <div><dt style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>Tgl Lahir</dt><dd style={{ margin: 0, fontWeight: 500 }}>{item.tanggalLahir || '-'}</dd></div>
+                        <div><dt style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>Email</dt><dd style={{ margin: 0, fontWeight: 500 }}>{item.email || '-'}</dd></div>
                         <div><dt style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>No. Ponsel</dt><dd style={{ margin: 0, fontWeight: 500 }}>{item.nomorPonsel || '-'}</dd></div>
                         <div><dt style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>Alamat</dt><dd style={{ margin: 0, fontWeight: 500, whiteSpace: 'pre-wrap' }}>{item.alamat || '-'}</dd></div>
                       </dl>
@@ -198,8 +197,31 @@ export default function Finish() {
                           <div><dt style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>Jenis Usaha</dt><dd style={{ margin: 0, fontWeight: 500 }}>{item.jenisUsaha || '-'}</dd></div>
                           <div><dt style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>Modal Usaha</dt><dd style={{ margin: 0, fontWeight: 500 }}>Rp {Number(item.modalUsaha).toLocaleString('id-ID') || '-'}</dd></div>
                           <div><dt style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>Lama Usaha</dt><dd style={{ margin: 0, fontWeight: 500 }}>{item.lamaUsaha || '-'}</dd></div>
+                          <div><dt style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>Luas Bangunan</dt><dd style={{ margin: 0, fontWeight: 500 }}>{item.luasBangunan ? `${item.luasBangunan} m2` : '-'}</dd></div>
+                          <div><dt style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>Penghasilan / Thn</dt><dd style={{ margin: 0, fontWeight: 500 }}>{item.penghasilanTahunan ? `Rp ${Number(item.penghasilanTahunan).toLocaleString('id-ID')}` : '-'}</dd></div>
                           <div style={{ gridColumn: '1 / -1' }}><dt style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>Lokasi Usaha</dt><dd style={{ margin: 0, fontWeight: 500 }}>{item.lokasiUsaha || '-'}</dd></div>
                         </dl>
+                      )}
+
+                      {/* Display Coordinate */}
+                      {item.koordinat && (
+                        <div style={{ marginTop: '1.5rem', background: 'rgba(16, 185, 129, 0.05)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(16, 185, 129, 0.2)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                          <div style={{ background: '#10b981', color: 'white', padding: '0.5rem', borderRadius: '10px' }}>
+                            <MapPin size={20} />
+                          </div>
+                          <div>
+                            <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#10b981', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Koordinat Lokasi Terverifikasi</div>
+                            <div style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: '1rem' }}>{item.koordinat}</div>
+                          </div>
+                          <a 
+                            href={`https://www.google.com/maps/search/?api=1&query=${item.koordinat}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            style={{ marginLeft: 'auto', background: 'rgba(255,255,255,0.05)', color: 'var(--text-main)', padding: '0.4rem 0.8rem', borderRadius: '8px', fontSize: '0.75rem', textDecoration: 'none', fontWeight: 600, border: '1px solid var(--border)' }}
+                          >
+                            Buka Maps
+                          </a>
+                        </div>
                       )}
 
                       {item.jenisLayanan === 'Pembuatan Sertifikat Halal ( Selfdeclare )' && (

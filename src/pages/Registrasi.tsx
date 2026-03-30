@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../config/firebase';
 import { ref, push, set } from 'firebase/database';
-import { FileText, Send, AlertCircle, CheckCircle2, Printer } from 'lucide-react';
+import { FileText, Send, AlertCircle, CheckCircle2, Printer, Plus, Trash2, Mail } from 'lucide-react';
 import { canPerformAction } from '../utils/permissions';
 
 export default function Registrasi() {
@@ -17,15 +17,19 @@ export default function Registrasi() {
   const [tempatLahir, setTempatLahir] = useState('');
   const [tanggalLahir, setTanggalLahir] = useState('');
   const [nomorPonsel, setNomorPonsel] = useState('');
+  const [email, setEmail] = useState('');
   const [alamat, setAlamat] = useState('');
   const [jenisLayanan, setJenisLayanan] = useState('');
   
   // Conditional: NIB
   const [namaUsaha, setNamaUsaha] = useState('');
   const [lokasiUsaha, setLokasiUsaha] = useState('');
-  const [jenisUsaha, setJenisUsaha] = useState('');
+  const [jenisUsahaList, setJenisUsahaList] = useState<string[]>([]);
+  const [currentJenisUsaha, setCurrentJenisUsaha] = useState('');
   const [modalUsaha, setModalUsaha] = useState('');
   const [lamaUsaha, setLamaUsaha] = useState('');
+  const [luasBangunan, setLuasBangunan] = useState('');
+  const [penghasilanTahunan, setPenghasilanTahunan] = useState('');
 
   // Conditional: Halal
   const [namaProduk, setNamaProduk] = useState('');
@@ -41,8 +45,9 @@ export default function Registrasi() {
   const formRef = useRef<HTMLDivElement>(null);
 
   const resetForm = () => {
-    setNama(''); setJenisKelamin(''); setNik(''); setNomorKk(''); setTempatLahir(''); setTanggalLahir(''); setNomorPonsel(''); setAlamat(''); setJenisLayanan('');
-    setNamaUsaha(''); setLokasiUsaha(''); setJenisUsaha(''); setModalUsaha(''); setLamaUsaha('');
+    setNama(''); setJenisKelamin(''); setNik(''); setNomorKk(''); setTempatLahir(''); setTanggalLahir(''); setNomorPonsel(''); setEmail(''); setAlamat(''); setJenisLayanan('');
+    setNamaUsaha(''); setLokasiUsaha(''); setJenisUsahaList([]); setModalUsaha(''); setLamaUsaha('');
+    setLuasBangunan(''); setPenghasilanTahunan('');
     setNamaProduk(''); setLokasiPabrik(''); setBahanDigunakan(''); setBahanPembersih(''); setBahanKemasan(''); setTataCaraPembuatan('');
   };
 
@@ -50,25 +55,36 @@ export default function Registrasi() {
     window.print();
   };
 
+  const handleAddJenisUsaha = () => {
+    if (currentJenisUsaha.trim()) {
+      setJenisUsahaList([...jenisUsahaList, currentJenisUsaha.trim()]);
+      setCurrentJenisUsaha('');
+    }
+  };
+
+  const handleRemoveJenisUsaha = (index: number) => {
+    setJenisUsahaList(jenisUsahaList.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus(null);
 
     // Basic Validation for common fields
-    if (!nama || !jenisKelamin || !nik || !nomorKk || !tempatLahir || !tanggalLahir || !nomorPonsel || !alamat || !jenisLayanan) {
-      setStatus({ type: 'error', msg: 'Mohon isi semua data diri termasuk Tempat/Tanggal lahir dan jenis layanan.' });
+    if (!nama || !jenisKelamin || !nik || !nomorKk || !tempatLahir || !tanggalLahir || !nomorPonsel || !email || !alamat || !jenisLayanan) {
+      setStatus({ type: 'error', msg: 'Mohon isi semua data diri termasuk Email, Tempat/Tanggal lahir dan jenis layanan.' });
       return;
     }
 
     if (jenisLayanan === 'Pembuatan NIB') {
-      if (!namaUsaha || !lokasiUsaha || !jenisUsaha || !modalUsaha || !lamaUsaha) {
-        setStatus({ type: 'error', msg: 'Mohon isi semua detail usaha untuk NIB.' });
+      if (!namaUsaha || !lokasiUsaha || jenisUsahaList.length === 0 || !modalUsaha || !lamaUsaha || !luasBangunan || !penghasilanTahunan) {
+        setStatus({ type: 'error', msg: 'Mohon isi semua detail usaha untuk NIB termasuk Jenis Usaha, Luas Bangunan dan Penghasilan.' });
         return;
       }
     }
 
     if (jenisLayanan === 'Pembuatan Sertifikat Halal ( Selfdeclare )') {
-      if (!namaUsaha || !lokasiUsaha || !jenisUsaha || !modalUsaha || !lamaUsaha) {
+      if (!namaUsaha || !lokasiUsaha || jenisUsahaList.length === 0 || !modalUsaha || !lamaUsaha || !luasBangunan || !penghasilanTahunan) {
         setStatus({ type: 'error', msg: 'Mohon isi semua detail usaha (Data NIB) untuk Sertifikat Halal.' });
         return;
       }
@@ -97,6 +113,7 @@ export default function Registrasi() {
         tempatLahir,
         tanggalLahir,
         nomorPonsel,
+        email,
         alamat,
         jenisLayanan,
         status: 'Registrasi', 
@@ -108,10 +125,10 @@ export default function Registrasi() {
       let extendedData = {};
       
       if (jenisLayanan === 'Pembuatan NIB') {
-        extendedData = { namaUsaha, lokasiUsaha, jenisUsaha, modalUsaha, lamaUsaha };
+        extendedData = { namaUsaha, lokasiUsaha, jenisUsaha: jenisUsahaList.join(', '), jenisUsahaList, modalUsaha, lamaUsaha, luasBangunan, penghasilanTahunan };
       } else if (jenisLayanan === 'Pembuatan Sertifikat Halal ( Selfdeclare )') {
         extendedData = { 
-          namaUsaha, lokasiUsaha, jenisUsaha, modalUsaha, lamaUsaha,
+          namaUsaha, lokasiUsaha, jenisUsaha: jenisUsahaList.join(', '), jenisUsahaList, modalUsaha, lamaUsaha, luasBangunan, penghasilanTahunan,
           namaProduk, lokasiPabrik, bahanDigunakan, bahanPembersih, bahanKemasan, tataCaraPembuatan 
         };
       }
@@ -223,6 +240,13 @@ export default function Registrasi() {
               <label style={labelStyle}>Nomor Ponsel (WhatsApp) *</label>
               <input type="tel" value={nomorPonsel} onChange={e => setNomorPonsel(e.target.value)} style={inputStyle} required />
             </div>
+            <div style={fieldGroupStyle}>
+              <label style={labelStyle}>Email Aktif *</label>
+              <div style={{ position: 'relative' }}>
+                <Mail size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }} />
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="contoh@email.com" style={{...inputStyle, paddingLeft: '3rem'}} required />
+              </div>
+            </div>
           </div>
           <div style={fieldGroupStyle}>
             <label style={labelStyle}>Alamat Lengkap *</label>
@@ -241,7 +265,6 @@ export default function Registrasi() {
             </select>
           </div>
 
-          {/* Dinamis: Formulir NIB */}
           {(jenisLayanan === 'Pembuatan NIB' || jenisLayanan === 'Pembuatan Sertifikat Halal ( Selfdeclare )') && (
             <div className="animate-enter" style={{ background: 'rgba(0,0,0,0.1)', padding: '1.5rem', borderRadius: '16px', marginTop: '1.5rem' }}>
               <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: '#10b981' }}>Detail Usaha (Data NIB)</h3>
@@ -251,12 +274,32 @@ export default function Registrasi() {
                   <input type="text" value={namaUsaha} onChange={e => setNamaUsaha(e.target.value)} style={inputStyle} required />
                 </div>
                 <div style={fieldGroupStyle}>
-                  <label style={labelStyle}>Jenis Usaha *</label>
-                  <select value={jenisUsaha} onChange={e => setJenisUsaha(e.target.value)} style={{...inputStyle, appearance: 'none'}} required>
-                    <option value="" disabled style={{ color: 'black' }}>Pilih...</option>
-                    <option value="Kuliner" style={{ color: 'black' }}>Kuliner</option>
-                    <option value="Tidak Kuliner" style={{ color: 'black' }}>Tidak Kuliner</option>
-                  </select>
+                  <label style={labelStyle}>Jenis Usaha (Tambahkan multiple) *</label>
+                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                    <input 
+                      type="text" 
+                      value={currentJenisUsaha} 
+                      onChange={e => setCurrentJenisUsaha(e.target.value)} 
+                      placeholder="Misal: Perdagangan" 
+                      style={{...inputStyle, padding: '0.75rem'}}
+                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddJenisUsaha())}
+                    />
+                    <button 
+                      type="button" 
+                      onClick={handleAddJenisUsaha}
+                      style={{ background: 'var(--primary)', color: 'white', border: 'none', borderRadius: '10px', padding: '0 1rem', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                    >
+                      <Plus size={20} />
+                    </button>
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    {jenisUsahaList.map((item, index) => (
+                      <div key={index} style={{ background: 'rgba(255,255,255,0.1)', padding: '0.25rem 0.75rem', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem' }}>
+                        {item}
+                        <Trash2 size={14} style={{ cursor: 'pointer', color: '#ef4444' }} onClick={() => handleRemoveJenisUsaha(index)} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 <div style={fieldGroupStyle}>
                   <label style={labelStyle}>Modal Usaha (Rp) *</label>
@@ -265,6 +308,14 @@ export default function Registrasi() {
                 <div style={fieldGroupStyle}>
                   <label style={labelStyle}>Lama Usaha *</label>
                   <input type="text" value={lamaUsaha} onChange={e => setLamaUsaha(e.target.value)} placeholder="Misal: 2 Tahun" style={inputStyle} required />
+                </div>
+                <div style={fieldGroupStyle}>
+                  <label style={labelStyle}>Luas Bangunan (m2) *</label>
+                  <input type="text" value={luasBangunan} onChange={e => setLuasBangunan(e.target.value)} placeholder="Misal: 50" style={inputStyle} required />
+                </div>
+                <div style={fieldGroupStyle}>
+                  <label style={labelStyle}>Penghasilan Per Tahun (Rp) *</label>
+                  <input type="number" value={penghasilanTahunan} onChange={e => setPenghasilanTahunan(e.target.value)} style={inputStyle} required />
                 </div>
               </div>
               <div style={fieldGroupStyle}>

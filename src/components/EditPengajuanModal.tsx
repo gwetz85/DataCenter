@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { db } from '../config/firebase';
 import { ref, update } from 'firebase/database';
-import { X, Save } from 'lucide-react';
+import { X, Save, Plus, Trash2 } from 'lucide-react';
 
 interface EditPengajuanModalProps {
   data: any;
@@ -23,12 +23,35 @@ export default function EditPengajuanModal({ data, onClose, onSuccess }: EditPen
     setFormData((prev: any) => ({ ...prev, [field]: value }));
   };
 
+  const handleAddJenisUsaha = () => {
+    const current = formData._currentJenisUsaha || '';
+    if (current.trim()) {
+      const newList = [...(formData.jenisUsahaList || []), current.trim()];
+      setFormData((prev: any) => ({ 
+        ...prev, 
+        jenisUsahaList: newList,
+        jenisUsaha: newList.join(', '),
+        _currentJenisUsaha: '' 
+      }));
+    }
+  };
+
+  const handleRemoveJenisUsaha = (index: number) => {
+    const newList = (formData.jenisUsahaList || []).filter((_: any, i: number) => i !== index);
+    setFormData((prev: any) => ({ 
+      ...prev, 
+      jenisUsahaList: newList,
+      jenisUsaha: newList.join(', ')
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
       const updateData = { ...formData };
       delete updateData.id; // don't update ID
+      delete updateData._currentJenisUsaha; // cleaning temp field
       
       await update(ref(db, `pengajuan/${data.id}`), updateData);
       onSuccess();
@@ -116,6 +139,10 @@ export default function EditPengajuanModal({ data, onClose, onSuccess }: EditPen
               <label style={labelStyle}>Nomor Ponsel</label>
               <input type="tel" value={formData.nomorPonsel || ''} onChange={e => handleChange('nomorPonsel', e.target.value)} style={inputStyle} required />
             </div>
+            <div style={fieldGroupStyle}>
+              <label style={labelStyle}>Email Aktif</label>
+              <input type="email" value={formData.email || ''} onChange={e => handleChange('email', e.target.value)} style={inputStyle} required />
+            </div>
           </div>
           <div style={fieldGroupStyle}>
             <label style={labelStyle}>Alamat Lengkap</label>
@@ -142,12 +169,32 @@ export default function EditPengajuanModal({ data, onClose, onSuccess }: EditPen
                   <input type="text" value={formData.namaUsaha || ''} onChange={e => handleChange('namaUsaha', e.target.value)} style={inputStyle} />
                 </div>
                 <div style={fieldGroupStyle}>
-                  <label style={labelStyle}>Jenis Usaha</label>
-                  <select value={formData.jenisUsaha || ''} onChange={e => handleChange('jenisUsaha', e.target.value)} style={{...inputStyle, appearance: 'none'}}>
-                    <option value="" disabled style={{ color: 'black' }}>Pilih...</option>
-                    <option value="Kuliner" style={{ color: 'black' }}>Kuliner</option>
-                    <option value="Tidak Kuliner" style={{ color: 'black' }}>Tidak Kuliner</option>
-                  </select>
+                  <label style={labelStyle}>Jenis Usaha (Multiple)</label>
+                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                    <input 
+                      type="text" 
+                      value={formData._currentJenisUsaha || ''} 
+                      onChange={e => handleChange('_currentJenisUsaha', e.target.value)} 
+                      placeholder="Add type..." 
+                      style={{...inputStyle, padding: '0.5rem'}}
+                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddJenisUsaha())}
+                    />
+                    <button 
+                      type="button" 
+                      onClick={handleAddJenisUsaha}
+                      style={{ background: 'var(--primary)', color: 'white', border: 'none', borderRadius: '8px', padding: '0 0.75rem', cursor: 'pointer' }}
+                    >
+                      <Plus size={16} />
+                    </button>
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                    {(formData.jenisUsahaList || []).map((item: string, index: number) => (
+                      <div key={index} style={{ background: 'rgba(255,255,255,0.1)', padding: '0.2rem 0.6rem', borderRadius: '15px', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem' }}>
+                        {item}
+                        <Trash2 size={12} style={{ cursor: 'pointer', color: '#ef4444' }} onClick={() => handleRemoveJenisUsaha(index)} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 <div style={fieldGroupStyle}>
                   <label style={labelStyle}>Modal Usaha (Rp)</label>
@@ -156,6 +203,14 @@ export default function EditPengajuanModal({ data, onClose, onSuccess }: EditPen
                 <div style={fieldGroupStyle}>
                   <label style={labelStyle}>Lama Usaha</label>
                   <input type="text" value={formData.lamaUsaha || ''} onChange={e => handleChange('lamaUsaha', e.target.value)} style={inputStyle} />
+                </div>
+                <div style={fieldGroupStyle}>
+                  <label style={labelStyle}>Luas Bangunan (m2)</label>
+                  <input type="text" value={formData.luasBangunan || ''} onChange={e => handleChange('luasBangunan', e.target.value)} style={inputStyle} />
+                </div>
+                <div style={fieldGroupStyle}>
+                  <label style={labelStyle}>Penghasilan / Thn</label>
+                  <input type="number" value={formData.penghasilanTahunan || ''} onChange={e => handleChange('penghasilanTahunan', e.target.value)} style={inputStyle} />
                 </div>
               </div>
               <div style={fieldGroupStyle}>

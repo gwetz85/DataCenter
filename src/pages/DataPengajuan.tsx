@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../config/firebase';
 import { ref, onValue, update } from 'firebase/database';
 import { useAuth } from '../context/AuthContext';
-import { Database, ChevronDown, ChevronUp, PlayCircle, Clock, CheckCircle, Edit } from 'lucide-react';
+import { Database, ChevronDown, ChevronUp, PlayCircle, Clock, CheckCircle, Edit, MapPin, Send } from 'lucide-react';
 import { canPerformAction } from '../utils/permissions';
 import EditPengajuanModal from '../components/EditPengajuanModal';
 
@@ -12,6 +12,8 @@ export default function DataPengajuan() {
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [editingData, setEditingData] = useState<any>(null);
+  const [coordinateInputId, setCoordinateInputId] = useState<string | null>(null);
+  const [koordinatValue, setKoordinatValue] = useState('');
 
   useEffect(() => {
     const pengajuanRef = ref(db, 'pengajuan');
@@ -51,13 +53,21 @@ export default function DataPengajuan() {
     }
   };
 
-  const handleUpdateWaiting = async (id: string) => {
-    if (!window.confirm('Teruskan ke Validasi Admin (Waiting)? Anda tidak bisa lagi mengubah data ini setelah diteruskan.')) return;
+  const handleUpdateWaiting = async (id: string, koordinat: string) => {
+    if (!koordinat) {
+      alert('Koordinat harus diisi sebagai bahan verifikasi.');
+      return;
+    }
+    
     try {
       await update(ref(db, `pengajuan/${id}`), {
         status: 'Waiting',
-        waitingAt: new Date().getTime()
+        waitingAt: new Date().getTime(),
+        koordinat: koordinat
       });
+      setCoordinateInputId(null);
+      setKoordinatValue('');
+      alert('Data berhasil diteruskan ke Validasi Admin.');
     } catch (err) {
       console.error(err);
       alert('Gagal meneruskan data.');
@@ -200,7 +210,51 @@ export default function DataPengajuan() {
                       )}
                     </div>
 
+                    {/* Additional Data Columns for NIB/Halal */}
+                    {item.email && (
+                      <div style={{ marginTop: '1rem', borderTop: '1px solid var(--border)', paddingTop: '1rem' }}>
+                        <dl style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', fontSize: '0.9rem' }}>
+                          <div><dt style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>Email</dt><dd style={{ margin: 0, fontWeight: 500 }}>{item.email}</dd></div>
+                          {item.luasBangunan && <div><dt style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>Luas Bangunan</dt><dd style={{ margin: 0, fontWeight: 500 }}>{item.luasBangunan} m2</dd></div>}
+                          {item.penghasilanTahunan && <div><dt style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>Penghasilan / Thn</dt><dd style={{ margin: 0, fontWeight: 500 }}>Rp {Number(item.penghasilanTahunan).toLocaleString('id-ID')}</dd></div>}
+                        </dl>
+                      </div>
+                    )}
                   </div>
+
+                  {/* Coordinate Input Card */}
+                  {coordinateInputId === item.id && (
+                    <div className="animate-enter" style={{ background: 'rgba(59, 130, 246, 0.05)', padding: '1.5rem', borderRadius: '16px', border: '2px solid var(--primary)', marginBottom: '1.5rem', marginTop: '1rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem', color: 'var(--primary)' }}>
+                        <MapPin size={24} />
+                        <h4 style={{ margin: 0, fontWeight: 800 }}>Masukkan Titik Koordinat</h4>
+                      </div>
+                      <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
+                        Sebagai bahan verifikasi bahwa data telah selesai dikerjakan, silakan masukkan titik koordinat lokasi (Misal: -6.1234, 106.1234).
+                      </p>
+                      <div style={{ display: 'flex', gap: '0.75rem' }}>
+                        <input 
+                          type="text" 
+                          value={koordinatValue}
+                          onChange={(e) => setKoordinatValue(e.target.value)}
+                          placeholder="Contoh: -6.2000, 106.8166"
+                          style={{ flex: 1, padding: '1rem', borderRadius: '12px', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)', color: 'white', outline: 'none' }}
+                        />
+                        <button 
+                          onClick={() => handleUpdateWaiting(item.id, koordinatValue)}
+                          style={{ padding: '0 1.5rem', borderRadius: '12px', background: 'var(--primary)', color: 'white', border: 'none', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                        >
+                          <Send size={18} /> Kirim
+                        </button>
+                        <button 
+                          onClick={() => setCoordinateInputId(null)}
+                          style={{ padding: '0 1rem', borderRadius: '12px', background: 'rgba(255,255,255,0.1)', color: 'white', border: 'none', cursor: 'pointer' }}
+                        >
+                          Batal
+                        </button>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Actions Petugas */}
                   {canPerformAction(currentUser?.role || 'Guest', '/data-pengajuan', 'edit') && (
@@ -212,7 +266,10 @@ export default function DataPengajuan() {
                         <PlayCircle size={20} /> Update Status
                       </button>
                       <button 
-                        onClick={() => handleUpdateWaiting(item.id)}
+                        onClick={() => {
+                          setCoordinateInputId(item.id);
+                          setKoordinatValue(item.koordinat || '');
+                        }}
                         style={{ flex: 1, padding: '1rem', borderRadius: '12px', background: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.3)', fontWeight: 800, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.2s' }}
                       >
                         <CheckCircle size={20} /> Teruskan
